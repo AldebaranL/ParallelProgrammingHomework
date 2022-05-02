@@ -93,7 +93,7 @@
 1651307589 source:d:\mycodes\codeblocks\ann\src\ann_pthread.cpp
 	"ANN_pthread.h"
 
-1651305296 d:\mycodes\codeblocks\ann\include\ann_pthread.h
+1651486954 d:\mycodes\codeblocks\ann\include\ann_pthread.h
 	<Layer.h>
 	<pthread.h>
 	<assert.h>
@@ -104,6 +104,9 @@
 	<ctime>
 	<math.h>
 	<vector>
+	<algorithm>
+	<semaphore.h>
+	"global.h"
 
 1651478198 source:d:\mycodes\codeblocks\ann\src\layer.cpp
 	"Layer.h"
@@ -113,10 +116,10 @@
 	<math.h>
 	<stdio.h>
 
-1651485442 source:d:\mycodes\codeblocks\ann\main.cpp
+1651486954 source:d:\mycodes\codeblocks\ann\main.cpp
 	<iostream>
 	"ANN_2.h"
-	"ANN_new.h"
+	"ANN_pthread.h"
 	<windows.h>
 	<cstdlib>
 	<ctime>
@@ -179,10 +182,10 @@
 1651387775 d:\mycodes\codeblocks\ann\include\global.c
 	<semaphore.h>
 
-1651477550 d:\mycodes\codeblocks\ann\include\global.h
+1651486987 d:\mycodes\codeblocks\ann\include\global.h
 	<semaphore.h>
 	<pthread.h>
-	"ANN_new.h"
+	"ANN_pthread.h"
 
 1651486028 source:d:\mycodes\codeblocks\ann\global.cpp
 	"global.h"

@@ -1,6 +1,6 @@
 #include <iostream>
 #include"ANN_2.h"
-#include"ANN_new.h"
+#include"ANN_pthread.h"
 //#include"ANN_SIMD.h"
 //#include"ANN_SIMD_aligned.h"
 #include<windows.h>
@@ -136,7 +136,7 @@ int main()
     QueryPerformanceCounter ( (LARGE_INTEGER*) &tail);	// end time
     cout << "ori:" << (tail - head) * 1000.0 / freq << "ms" << endl;
 
-    ANN_new ann ( (int*) NUM_EACH_LAYER,  1,1,NUM_LAYERS);
+    ANN_pthread ann ( (int*) NUM_EACH_LAYER,  1,1,NUM_LAYERS);
 
     QueryPerformanceCounter ( (LARGE_INTEGER*) &head); // start time
     ann.train (NUM_SAMPLE, TRAIN_MAT, LABEL_MAT);

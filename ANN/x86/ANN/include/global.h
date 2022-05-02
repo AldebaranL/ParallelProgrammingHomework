@@ -3,15 +3,15 @@
 
 #include<semaphore.h>
 #include<pthread.h>
-#include"ANN_new.h"
+#include"ANN_pthread.h"
 //#include <iostream>
 //using namespace std;
-class ANN_new;
+class ANN_pthread;
 typedef struct
 {
     int t_id; //线程 id
     float **sampleMat;
-    ANN_new* class_pointer;
+    ANN_pthread* class_pointer;
 } threadParam_t;
 extern const int NUM_THREADS;
 extern sem_t *sem_before_bp;// 每个线程有自己专属的信号量
