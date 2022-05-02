@@ -1,0 +1,189 @@
+# depslib dependency file v1.0
+1649249925 source:d:\mycodes\codeblocks\ann_simd\main.cpp
+	<iostream>
+	"ANN.h"
+	"ANN_SIMD.h"
+	"ANN_SIMD_aligned.h"
+	<windows.h>
+	<cstdlib>
+	<ctime>
+
+1648985507 d:\mycodes\codeblocks\ann_simd\include\ann.h
+	<assert.h>
+	<stdlib.h>
+	<iostream>
+	<string.h>
+	<windows.h>
+	<ctime>
+	<math.h>
+
+1649162379 source:d:\mycodes\codeblocks\ann_simd\src\ann.cpp
+	"ANN.h"
+
+1649244109 source:d:\mycodes\codeblocks\ann_simd\src\ann_simd.cpp
+	"ANN_SIMD.h"
+
+1649238544 d:\mycodes\codeblocks\ann_simd\include\ann_simd.h
+	<assert.h>
+	<stdlib.h>
+	<iostream>
+	<string.h>
+	<windows.h>
+	<ctime>
+	<math.h>
+	<immintrin.h>
+
+1649249624 source:d:\mycodes\codeblocks\ann_simd\src\ann_simd_aligned.cpp
+	"ANN_SIMD_aligned.h"
+
+1649249678 d:\mycodes\codeblocks\ann_simd\include\ann_simd_aligned.h
+	<assert.h>
+	<stdlib.h>
+	<iostream>
+	<string.h>
+	<windows.h>
+	<ctime>
+	<math.h>
+	<immintrin.h>
+
+1649247796 source:d:\mycodes\codeblocks\ann_simd\test.cpp
+	<stdlib.h>
+	<immintrin.h>
+
+1649162379 source:d:\mycodes\codeblocks\ann\src\ann.cpp
+	"ANN.h"
+
+1651308099 d:\mycodes\codeblocks\ann\include\ann.h
+	<assert.h>
+	<stdlib.h>
+	<iostream>
+	<string.h>
+	<windows.h>
+	<ctime>
+	<math.h>
+
+1649244109 source:d:\mycodes\codeblocks\ann\src\ann_simd.cpp
+	"ANN_SIMD.h"
+
+1651308307 d:\mycodes\codeblocks\ann\include\ann_simd.h
+	<assert.h>
+	<stdlib.h>
+	<iostream>
+	<string.h>
+	<windows.h>
+	<ctime>
+	<math.h>
+	<immintrin.h>
+
+1649250220 source:d:\mycodes\codeblocks\ann\src\ann_simd_aligned.cpp
+	"ANN_SIMD_aligned.h"
+
+1651308188 d:\mycodes\codeblocks\ann\include\ann_simd_aligned.h
+	<assert.h>
+	<stdlib.h>
+	<iostream>
+	<string.h>
+	<windows.h>
+	<ctime>
+	<math.h>
+	<immintrin.h>
+
+1651388493 source:d:\mycodes\codeblocks\ann\test.cpp
+
+1651307589 source:d:\mycodes\codeblocks\ann\src\ann_pthread.cpp
+	"ANN_pthread.h"
+
+1651305296 d:\mycodes\codeblocks\ann\include\ann_pthread.h
+	<Layer.h>
+	<pthread.h>
+	<assert.h>
+	<stdlib.h>
+	<iostream>
+	<string.h>
+	<windows.h>
+	<ctime>
+	<math.h>
+	<vector>
+
+1651478198 source:d:\mycodes\codeblocks\ann\src\layer.cpp
+	"Layer.h"
+
+1651308349 d:\mycodes\codeblocks\ann\include\layer.h
+	<stdlib.h>
+	<math.h>
+	<stdio.h>
+
+1651485442 source:d:\mycodes\codeblocks\ann\main.cpp
+	<iostream>
+	"ANN_2.h"
+	"ANN_new.h"
+	<windows.h>
+	<cstdlib>
+	<ctime>
+	"global.h"
+
+1651479515 d:\mycodes\codeblocks\ann\include\ann_new.h
+	<Layer.h>
+	<pthread.h>
+	<assert.h>
+	<stdlib.h>
+	<iostream>
+	<string.h>
+	<windows.h>
+	<ctime>
+	<math.h>
+	<vector>
+	<algorithm>
+	<semaphore.h>
+	"global.h"
+
+1651486021 source:d:\mycodes\codeblocks\ann\src\ann_new.cpp
+	"ANN_new.h"
+
+1651308003 source:d:\mycodes\codeblocks\ann\src\ann_1.cpp
+	"ANN_1.h"
+
+1651308130 d:\mycodes\codeblocks\ann\include\ann_1.h
+	<Layer.h>
+	<pthread.h>
+	<assert.h>
+	<stdlib.h>
+	<iostream>
+	<string.h>
+	<windows.h>
+	<ctime>
+	<math.h>
+	<vector>
+
+1651483703 source:d:\mycodes\codeblocks\ann\src\ann_2.cpp
+	"ANN_2.h"
+
+1651483503 d:\mycodes\codeblocks\ann\include\ann_2.h
+	<Layer.h>
+	<pthread.h>
+	<assert.h>
+	<stdlib.h>
+	<iostream>
+	<string.h>
+	<windows.h>
+	<ctime>
+	<math.h>
+	<vector>
+	<algorithm>
+
+1651377628 d:\mycodes\codeblocks\ann\include\source.h
+
+1651388481 source:d:\mycodes\codeblocks\ann\include\global.c
+	"global.h"
+
+1651387775 d:\mycodes\codeblocks\ann\include\global.c
+	<semaphore.h>
+
+1651477550 d:\mycodes\codeblocks\ann\include\global.h
+	<semaphore.h>
+	<pthread.h>
+	"ANN_new.h"
+
+1651486028 source:d:\mycodes\codeblocks\ann\global.cpp
+	"global.h"
+
