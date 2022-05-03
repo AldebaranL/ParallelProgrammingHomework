@@ -1,7 +1,8 @@
 #ifndef ANN_2_H
 #define ANN_2_H
 
-#include<Layer.h>
+#include"Layer.h"
+#include"global.h"
 #include <pthread.h>
 #include <assert.h>
 #include <stdlib.h>
@@ -17,7 +18,7 @@ class ANN_2
 {
     //ANN改进版本2，重构了框架，可以指定梯度下降的batch_size
 public:
-    ANN_2 ( int* _num_each_layer,int _num_epoch=10,int _batch_size=1, int _num_layers = 1, float _study_rate = 0.1);
+    ANN_2 ( int* _num_each_layer,int _num_epoch=10,int _batch_size=NUM_SAMPLE, int _num_layers = 1, float _study_rate = 0.1);
     ~ANN_2();
 
     void shuffle (const int num_sample, float** _trainMat, float** _labelMat);

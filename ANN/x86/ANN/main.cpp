@@ -18,13 +18,16 @@ void creat_samples()
         for (int i = k * numPerClass; i < (k + 1) * numPerClass; ++i)
         {
             TRAIN_MAT[i] = new float[NUM_EACH_LAYER[0]];
-            //srand ( (int) time (0) );
-            TRAIN_MAT[i][0] = ( (rand() % 2000) - 1000) / 10000.0 + k / trainClass;
-            for (int j = 1; j < NUM_EACH_LAYER[0]; ++j)
+           // srand ( (int) time (0) );
+            //TRAIN_MAT[i][0] = ( (rand() % 2000) - 1000) / 10000.0 + k / trainClass;
+            for (int j = 0; j < NUM_EACH_LAYER[0]; ++j)
             {
+
+				TRAIN_MAT[i][j] = rand() % 1000 / 10000.0 + 0.1 * (2 * k + 1);
+
                 //TRAIN_MAT[i][j] = ( (rand() % 2000) - 1000 ) / 1000.0;
                 //printf("%d",k);
-                ///*
+                /*
                 switch(k){
                 case 0:
                     TRAIN_MAT[i][j] = 0.0;
@@ -52,29 +55,29 @@ void creat_samples()
             LABEL_MAT[i] = new float[NUM_EACH_LAYER[NUM_LAYERS+1]];
             for (int j = 0; j < NUM_EACH_LAYER[NUM_LAYERS+1]; ++j)
             {
-               // /*
+                /*
                 switch(k){
                 case 0:
                 LABEL_MAT[i][j] = 1.0;
                 break;
                 case 1:
-                LABEL_MAT[i][j] = 0.0;
+                LABEL_MAT[i][j] = 1.0;
                 break;
                 case 2:
                 LABEL_MAT[i][j] = 0.0;
                 break;
                 case 3:
-                LABEL_MAT[i][j] = 0.0;
+                LABEL_MAT[i][j] = 1.0;
                 break;
                 default:
                 printf("?");
                 }
                 //*/
                // LABEL_MAT[i][j] = k / trainClass*10+( (rand() % 2000) - 1000) / 10000.0;
-                //if (j%trainClass == k)
-                //    LABEL_MAT[i][j] = 1;
-                //else
-                //    LABEL_MAT[i][j] = -1;
+                if (j%trainClass == k)
+                    LABEL_MAT[i][j] = 1;
+                else
+                    LABEL_MAT[i][j] = 0;
                 //LABEL_MAT[i][j] = ( (rand() % 2000) - 1000 ) / 1000.0;
             }
 
@@ -112,34 +115,34 @@ int main()
     long long head, tail, freq;// timers
     QueryPerformanceFrequency ( (LARGE_INTEGER*) &freq);
 
-    ANN_2 ann2 ( (int*) NUM_EACH_LAYER, 1,1,NUM_LAYERS);
+    ANN_2 ann2 ( (int*) NUM_EACH_LAYER, 100,NUM_SAMPLE,NUM_LAYERS,0.1);
     ann2.shuffle (NUM_SAMPLE, TRAIN_MAT, LABEL_MAT);
 
-//        for (int i = 0; i <min(5, NUM_SAMPLE); i++)
-//    {
-//        for(int j=0;j<min(5,NUM_EACH_LAYER[0]);j++)printf("%f ",TRAIN_MAT[i][j]);printf("\n");
-//        for (int j = 0; j < min(5,NUM_EACH_LAYER[2]); j++)
-//        {
-//            printf("%f ",LABEL_MAT[i][j]);
-//        }
-//         printf("\n");
-//    }
+        for (int i = 0; i <min(5, NUM_SAMPLE); i++)
+    {
+        for(int j=0;j<min(5,NUM_EACH_LAYER[0]);j++)printf("%f ",TRAIN_MAT[i][j]);printf("\n");
+        for (int j = 0; j < min(5,NUM_EACH_LAYER[2]); j++)
+        {
+            printf("%f ",LABEL_MAT[i][j]);
+        }
+         printf("\n");
+    }
 
     QueryPerformanceCounter ( (LARGE_INTEGER*) &head); // start time
-    ann2.train_SIMD (NUM_SAMPLE, TRAIN_MAT, LABEL_MAT);
+    //ann2.train_SIMD (NUM_SAMPLE, TRAIN_MAT, LABEL_MAT);
     QueryPerformanceCounter ( (LARGE_INTEGER*) &tail);	// end time
     cout << "SIMD:" << (tail - head) * 1000.0 / freq << "ms" << endl;
 
-    ANN_2 ann3 ( (int*) NUM_EACH_LAYER, 1,1,NUM_LAYERS);
+    ANN_2 ann3 ( (int*) NUM_EACH_LAYER, 100,NUM_SAMPLE,NUM_LAYERS,0.1);
     QueryPerformanceCounter ( (LARGE_INTEGER*) &head); // start time
     ann3.train (NUM_SAMPLE, TRAIN_MAT, LABEL_MAT);
     QueryPerformanceCounter ( (LARGE_INTEGER*) &tail);	// end time
     cout << "ori:" << (tail - head) * 1000.0 / freq << "ms" << endl;
 
-    ANN_pthread ann ( (int*) NUM_EACH_LAYER,  1,1,NUM_LAYERS);
+    ANN_pthread ann ( (int*) NUM_EACH_LAYER,  100,NUM_SAMPLE,NUM_LAYERS,0.1);
 
     QueryPerformanceCounter ( (LARGE_INTEGER*) &head); // start time
-    ann.train (NUM_SAMPLE, TRAIN_MAT, LABEL_MAT);
+   // ann.train_2(NUM_SAMPLE, TRAIN_MAT, LABEL_MAT);
     QueryPerformanceCounter ( (LARGE_INTEGER*) &tail);	// end time
     cout << "pthread:" << (tail - head) * 1000.0 / freq << "ms" << endl;
 
@@ -167,23 +170,25 @@ int main()
     test_case[0]=0.0;
     test_case[1]=0.0;
     //for (int i = 0; i < 2; i++) printf ("%f,", test_case[i]);
-    ann.get_predictions(test_case);
     ann2.get_predictions(test_case);
+    ann3.get_predictions(test_case);
     test_case[0]=0.0;
     test_case[1]=1.0;
     //for (int i = 0; i < 2; i++) printf ("%f,", test_case[i]);
-    ann.get_predictions(test_case);
     ann2.get_predictions(test_case);
+    ann3.get_predictions(test_case);
     test_case[0]=1.0;
     test_case[1]=0.0;
     //for (int i = 0; i < 2; i++) printf ("%f,", test_case[i]);
-    ann.get_predictions(test_case);
     ann2.get_predictions(test_case);
+    ann3.get_predictions(test_case);
     test_case[0]=1.0;
     test_case[1]=1.0;
     //for (int i = 0; i < 2; i++) printf ("%f,", test_case[i]);
-    ann.get_predictions(test_case);
     ann2.get_predictions(test_case);
+    ann3.get_predictions(test_case);
+
+    delete []test_case;
   //  */
 //
 //    long long head, tail, freq;// timers

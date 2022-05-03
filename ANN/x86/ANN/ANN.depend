@@ -90,10 +90,10 @@
 
 1651388493 source:d:\mycodes\codeblocks\ann\test.cpp
 
-1651307589 source:d:\mycodes\codeblocks\ann\src\ann_pthread.cpp
+1651538930 source:d:\mycodes\codeblocks\ann\src\ann_pthread.cpp
 	"ANN_pthread.h"
 
-1651486954 d:\mycodes\codeblocks\ann\include\ann_pthread.h
+1651506937 d:\mycodes\codeblocks\ann\include\ann_pthread.h
 	<Layer.h>
 	<pthread.h>
 	<assert.h>
@@ -108,7 +108,7 @@
 	<semaphore.h>
 	"global.h"
 
-1651478198 source:d:\mycodes\codeblocks\ann\src\layer.cpp
+1651538282 source:d:\mycodes\codeblocks\ann\src\layer.cpp
 	"Layer.h"
 
 1651308349 d:\mycodes\codeblocks\ann\include\layer.h
@@ -116,7 +116,7 @@
 	<math.h>
 	<stdio.h>
 
-1651486954 source:d:\mycodes\codeblocks\ann\main.cpp
+1651539539 source:d:\mycodes\codeblocks\ann\main.cpp
 	<iostream>
 	"ANN_2.h"
 	"ANN_pthread.h"
@@ -158,11 +158,12 @@
 	<math.h>
 	<vector>
 
-1651483703 source:d:\mycodes\codeblocks\ann\src\ann_2.cpp
+1651539402 source:d:\mycodes\codeblocks\ann\src\ann_2.cpp
 	"ANN_2.h"
 
-1651483503 d:\mycodes\codeblocks\ann\include\ann_2.h
-	<Layer.h>
+1651536595 d:\mycodes\codeblocks\ann\include\ann_2.h
+	"Layer.h"
+	"global.h"
 	<pthread.h>
 	<assert.h>
 	<stdlib.h>
@@ -182,11 +183,11 @@
 1651387775 d:\mycodes\codeblocks\ann\include\global.c
 	<semaphore.h>
 
-1651486987 d:\mycodes\codeblocks\ann\include\global.h
+1651538733 d:\mycodes\codeblocks\ann\include\global.h
 	<semaphore.h>
 	<pthread.h>
 	"ANN_pthread.h"
 
-1651486028 source:d:\mycodes\codeblocks\ann\global.cpp
+1651539402 source:d:\mycodes\codeblocks\ann\global.cpp
 	"global.h"
 

@@ -77,6 +77,7 @@ float Layer::derivative_activation_function (float x)
     {
     case sigmoid:
         return activation_function (x) * (1 - activation_function (x) );
+       // return x*(1-x);
     case tanh:
         return 1 - activation_function (x) * activation_function (x);
     }

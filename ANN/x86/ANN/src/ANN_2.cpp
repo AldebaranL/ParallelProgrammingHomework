@@ -84,7 +84,7 @@ void ANN_2::train_SIMD  (const int num_sample, float** _trainMat, float** _label
                 layers[num_layers]->delta[j] = 0.0;
             }
 
-            for (int i = 0; i < batch_size; i++, index++) //默认batch_size=1，即采用随机梯度下降法，每次使用全部样本训练并更新参数
+            for (int i = 0; i < batch_size && index < num_sample; i++, index++) //默认batch_size=1，即采用随机梯度下降法，每次使用全部样本训练并更新参数
             {
                 //前向传播
 
@@ -151,19 +151,6 @@ void ANN_2::train_SIMD  (const int num_sample, float** _trainMat, float** _label
                     }
                 }
 
-                static int tt = 0;
-                float loss = 0.0;
-                for (int t = 0; t < num_each_layer[num_layers + 1]; ++t)
-                {
-                    loss += (layers[num_layers]->output_nodes[t] - _labelMat[index][t]) * (layers[num_layers]->output_nodes[t] - _labelMat[index][t]);
-                }
-                //printf ("第%d次训练：%0.12f\n", tt++,loss);
-
-
-                //for (int i = 0; i < min (5, num_each_layer[num_layers + 1]); i++)
-                //printf ("%f,", layers[num_layers]->output_nodes[i]);
-                //printf ("\n");
-                // printf ("finish predict\n");
 
                 //计算loss，即最后一层的delta,即该minibatch中所有loss的平均值
                 for (int j = 0; j < num_each_layer[num_layers + 1]; j++)
@@ -174,7 +161,7 @@ void ANN_2::train_SIMD  (const int num_sample, float** _trainMat, float** _label
                     //layers[num_layers]->delta[j] += (layers[num_layers]->output_nodes[j] - _labelMat[index][j]);
                 }
                 //printf ("finish cal error\n");
-                for (int X_i = 0; X_i < num_each_layer[0]; X_i++) avr_X[X_i] += _labelMat[index][X_i];
+                for (int X_i = 0; X_i < num_each_layer[0]; X_i++) avr_X[X_i] += _trainMat[index][X_i];
             }
             if (index % batch_size == 0)
             {
@@ -261,32 +248,38 @@ void ANN_2::train (const int num_sample, float** _trainMat, float** _labelMat)
     printf ("begin training\n");
     float thre = 1e-2;
     float *avr_X = new float[num_each_layer[0]];
+    float *avr_Y = new float[num_each_layer[num_layers + 1]];
 
     for (int epoch = 0; epoch < num_epoch; epoch++)
     {
-        if (epoch % 5 == 0) printf ("round%d:\n", epoch);
+        if (epoch % 50 == 0)
+        {
+            printf ("round%d:\n", epoch);
+        }
         int index = 0;
-
 
         while (index < num_sample)
         {
             for (int X_i = 0; X_i < num_each_layer[0]; X_i++) avr_X[X_i] = 0.0;
+            for (int Y_i = 0; Y_i < num_each_layer[num_layers + 1]; Y_i++) avr_Y[Y_i] = 0.0;
+
             for (int j = 0; j < num_each_layer[num_layers + 1]; j++)
             {
                 layers[num_layers]->delta[j] = 0.0;
             }
 
-            for (int i = 0; i < batch_size; i++, index++) //默认batch_size=1，即采用随机梯度下降法，每次使用全部样本训练并更新参数
+            for (int batch_i = 0; batch_i < batch_size && index < num_sample; batch_i++, index++) //默认batch_size=1，即采用随机梯度下降法，每次使用全部样本训练并更新参数
             {
                 //前向传播
                 predict (_trainMat[index]);
-                static int tt = 0;
-                float loss = 0.0;
-                for (int t = 0; t < num_each_layer[num_layers + 1]; ++t)
-                {
-                    loss += (layers[num_layers]->output_nodes[t] - _labelMat[index][t]) * (layers[num_layers]->output_nodes[t] - _labelMat[index][t]);
-                }
-                //printf ("第%d次训练：%0.12f\n", tt++,loss);
+
+//                static int tt = 0;
+//                float loss = 0.0;
+//                for (int t = 0; t < num_each_layer[num_layers + 1]; ++t)
+//                {
+//                    loss += (layers[num_layers]->output_nodes[t] - _labelMat[index][t]) * (layers[num_layers]->output_nodes[t] - _labelMat[index][t]);
+//                }
+//                printf ("第%d次训练：%0.12f\n", tt++,loss);
 
 
                 //for (int i = 0; i < min (5, num_each_layer[num_layers + 1]); i++)
@@ -302,9 +295,11 @@ void ANN_2::train (const int num_sample, float** _trainMat, float** _labelMat)
                     //交叉熵损失函数
                     //layers[num_layers]->delta[j] += (layers[num_layers]->output_nodes[j] - _labelMat[index][j]);
                 }
-                //printf ("finish cal error\n");
-                for (int X_i = 0; X_i < num_each_layer[0]; X_i++) avr_X[X_i] += _labelMat[index][X_i];
+                // printf ("finish cal error\n");
+                for (int X_i = 0; X_i < num_each_layer[0]; X_i++) avr_X[X_i] += _trainMat[index][X_i];
+                for (int Y_i = 0; Y_i < num_each_layer[num_layers + 1]; Y_i++) avr_Y[Y_i] += _labelMat[index][Y_i];
             }
+
             if (index % batch_size == 0)
             {
                 for (int j = 0; j < num_each_layer[num_layers + 1]; j++)
@@ -312,6 +307,7 @@ void ANN_2::train (const int num_sample, float** _trainMat, float** _labelMat)
                     if (batch_size == 0) printf ("wrong!\n");
                     layers[num_layers]->delta[j] /= batch_size;
                     //for(int i=0;i<5;i++)printf("delta=%f\n",layers[num_layers]->delta[i]);
+                    avr_Y[j] /= batch_size;
                 }
                 for (int X_i = 0; X_i < num_each_layer[0]; X_i++) avr_X[X_i] /= batch_size;
 
@@ -322,21 +318,31 @@ void ANN_2::train (const int num_sample, float** _trainMat, float** _labelMat)
                 {
                     if (index % batch_size == 0) printf ("wrong!\n");
                     layers[num_layers]->delta[j] /= (index % batch_size);
+                    avr_Y[j] /= (index % batch_size);
                 }
                 for (int X_i = 0; X_i < num_each_layer[0]; X_i++) avr_X[X_i] /= (index % batch_size);
             }
-
-            //反向传播更新参数
+           // printf("index:%d\n",index);
+            if ( index >= num_sample)
+            {
+                static int tt = 0;
+                float loss = 0.0;
+                for (int t = 0; t < num_each_layer[num_layers + 1]; ++t)
+                {
+                    loss += (layers[num_layers]->output_nodes[t] - avr_Y[t]) * (layers[num_layers]->output_nodes[t] - avr_Y[t]);
+                }
+                printf ("第%d次训练：%0.12f\n", tt++, loss);
+            }
+            //反向传播更新参数_trainMat[index-1]
             back_propagation (avr_X, _labelMat[index - 1]);
             //printf ("finish bp with index:%d\n",index);
         }
-
-
 
         // display();
     }
     printf ("finish training\n");
     delete[]avr_X;
+    delete[]avr_Y;
 }
 
 bool ANN_2::isNotConver_ (const int _sampleNum, float** _trainMat, float** _labelMat, float _thresh)
