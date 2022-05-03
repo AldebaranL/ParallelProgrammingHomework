@@ -72,7 +72,7 @@ void ANN_2::train_SIMD  (const int num_sample, float** _trainMat, float** _label
 
     for (int epoch = 0; epoch < num_epoch; epoch++)
     {
-        if (epoch % 5 == 0) printf ("round%d:\n", epoch);
+        //if (epoch % 5 == 0) printf ("round%d:\n", epoch);
         int index = 0;
 
         ANN_2 *class_p = this;
@@ -269,7 +269,7 @@ void ANN_2::train (const int num_sample, float** _trainMat, float** _labelMat)
 
     for (int epoch = 0; epoch < num_epoch; epoch++)
     {
-        if (epoch % 5 == 0) printf ("round%d:\n", epoch);
+        //if (epoch % 50 == 0) printf ("round%d:\n", epoch);
         int index = 0;
 
 

@@ -115,8 +115,6 @@ int main()
     long long head, tail, freq;// timers
     QueryPerformanceFrequency ( (LARGE_INTEGER*) &freq);
 
-    ANN_2 ann2 ( (int*) NUM_EACH_LAYER, 100,NUM_SAMPLE,NUM_LAYERS,0.1);
-    ann2.shuffle (NUM_SAMPLE, TRAIN_MAT, LABEL_MAT);
 
         for (int i = 0; i <min(5, NUM_SAMPLE); i++)
     {
@@ -128,24 +126,30 @@ int main()
          printf("\n");
     }
 
+    ANN_2 ann ( (int*) NUM_EACH_LAYER, 128,1,NUM_LAYERS,0.1);
+    ann.shuffle(NUM_SAMPLE,TRAIN_MAT,LABEL_MAT);
     QueryPerformanceCounter ( (LARGE_INTEGER*) &head); // start time
-    //ann2.train_SIMD (NUM_SAMPLE, TRAIN_MAT, LABEL_MAT);
+    ann.train (NUM_SAMPLE, TRAIN_MAT, LABEL_MAT);
     QueryPerformanceCounter ( (LARGE_INTEGER*) &tail);	// end time
-    cout << "SIMD:" << (tail - head) * 1000.0 / freq << "ms" << endl;
+    cout << "ori:" << (tail - head)*1.0 / freq << "s" << endl;
 
-    ANN_2 ann3 ( (int*) NUM_EACH_LAYER, 100,NUM_SAMPLE,NUM_LAYERS,0.1);
+    ANN_pthread ann1 ( (int*) NUM_EACH_LAYER,  128,1,NUM_LAYERS,0.1);
     QueryPerformanceCounter ( (LARGE_INTEGER*) &head); // start time
-    ann3.train (NUM_SAMPLE, TRAIN_MAT, LABEL_MAT);
+    ann1.train_sem(NUM_SAMPLE, TRAIN_MAT, LABEL_MAT);
     QueryPerformanceCounter ( (LARGE_INTEGER*) &tail);	// end time
-    cout << "ori:" << (tail - head) * 1000.0 / freq << "ms" << endl;
+    cout << "pthread:" << (tail - head)*1.0  / freq << "s" << endl;
 
-    ANN_pthread ann ( (int*) NUM_EACH_LAYER,  100,NUM_SAMPLE,NUM_LAYERS,0.1);
-
+    ANN_pthread ann2 ( (int*) NUM_EACH_LAYER,  128,1,NUM_LAYERS,0.1);
     QueryPerformanceCounter ( (LARGE_INTEGER*) &head); // start time
-   // ann.train_2(NUM_SAMPLE, TRAIN_MAT, LABEL_MAT);
+    ann2.train_barrier(NUM_SAMPLE, TRAIN_MAT, LABEL_MAT);
     QueryPerformanceCounter ( (LARGE_INTEGER*) &tail);	// end time
-    cout << "pthread:" << (tail - head) * 1000.0 / freq << "ms" << endl;
+    cout << "pthreadbarrier:" << (tail - head) *1.0 / freq << "s" << endl;
 
+    ANN_pthread ann3 ( (int*) NUM_EACH_LAYER,  128,1,NUM_LAYERS,0.1);
+    QueryPerformanceCounter ( (LARGE_INTEGER*) &head); // start time
+    //ann3.train_semSIMD(NUM_SAMPLE, TRAIN_MAT, LABEL_MAT);
+    QueryPerformanceCounter ( (LARGE_INTEGER*) &tail);	// end time
+    cout << "pthreadSIMD:" << (tail - head)*1.0  / freq << "s" << endl;
 
     float *test_case = new float[10];
  /*

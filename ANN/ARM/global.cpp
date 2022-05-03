@@ -7,8 +7,13 @@ sem_t *sem_before_fw = new sem_t[NUM_THREADS];
 sem_t sem_main_after_bp;
 sem_t sem_main_after_fw;
 
-int NUM_EACH_LAYER[10] = {4,128*4, 128*4,128*4, 4};
-int NUM_LAYERS=3;
+
+
+
+
+//int NUM_EACH_LAYER[10] = {4,1024*2, 1024*2,1024*2, 4};
+int NUM_EACH_LAYER[10] = {64,64,64};
+int NUM_LAYERS=1;
 
 const int trainClass = 4; //类别数
 const int numPerClass = 16;  //每个类别的样本点数
@@ -20,6 +25,11 @@ float** LABEL_MAT;
 pthread_t *handles = new pthread_t[NUM_THREADS];// 创建对应的 Handle
 
 threadParam_t *params = new threadParam_t[NUM_THREADS]; // 创建对应的线程数据结构
+
+pthread_barrier_t *barrier_fw=new pthread_barrier_t[NUM_LAYERS+1];
+pthread_barrier_t *barrier_bp=new pthread_barrier_t[NUM_LAYERS+1];
+pthread_barrier_t *barrier_delta=new pthread_barrier_t[NUM_LAYERS+1];
+pthread_barrier_t barrier_before_bp;
 
 void creat_params()
 {

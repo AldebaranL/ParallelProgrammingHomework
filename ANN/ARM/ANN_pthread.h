@@ -3,12 +3,12 @@
 
 #include "Layer.h"
 #include <pthread.h>
+#include <arm_neon.h>
 #include <assert.h>
 #include <stdlib.h>
 #include <iostream>
 #include <string.h>
 #include <ctime>
-#include <arm_neon.h>
 #include <math.h>
 #include<vector>
 #include<algorithm>
@@ -24,12 +24,15 @@ public:
     ~ANN_pthread();
 
     void shuffle (const int num_sample, float** _trainMat, float** _labelMat);
-    void train (int _sampleNum, float** _trainMat, float** _labelMat);
+    void train_semSIMD (int _sampleNum, float** _trainMat, float** _labelMat);
+    void train_barrier (const int _num_sample, float** _trainMat, float** _labelMat);
+	void train_sem (const int _num_sample, float** _trainMat, float** _labelMat);
     void get_predictions (float* X);
     void display();
 
     void* threadFunc_sem (void *param);
     void* threadFunc_sem_SIMD (void *param);
+    void* threadFunc_barrier(void *param);
 private:
     int num_layers;           //网络隐藏层数，默认为1
     int* num_each_layer;            //各层维度数[0]为输入层，[numLayers]为输出层，[1]至[numLayers-1]为隐藏层

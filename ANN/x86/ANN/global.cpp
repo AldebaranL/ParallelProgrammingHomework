@@ -12,7 +12,7 @@ sem_t sem_main_after_fw;
 
 
 //int NUM_EACH_LAYER[10] = {4,1024*2, 1024*2,1024*2, 4};
-int NUM_EACH_LAYER[10] = {64,64,64};
+int NUM_EACH_LAYER[10] = {256,256,256};
 int NUM_LAYERS=1;
 
 const int trainClass = 4; //Àà±ðÊý

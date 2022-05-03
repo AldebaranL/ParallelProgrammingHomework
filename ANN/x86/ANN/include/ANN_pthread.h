@@ -24,10 +24,12 @@ public:
     ~ANN_pthread();
 
     void shuffle (const int num_sample, float** _trainMat, float** _labelMat);
-    void train (int _sampleNum, float** _trainMat, float** _labelMat);
-    void train_2 (const int _num_sample, float** _trainMat, float** _labelMat);
     void get_predictions (float* X);
     void display();
+
+    void train_semSIMD (int _sampleNum, float** _trainMat, float** _labelMat);
+    void train_barrier (const int _num_sample, float** _trainMat, float** _labelMat);
+	void train_sem (const int _num_sample, float** _trainMat, float** _labelMat);
 
     void* threadFunc_sem (void *param);
     void* threadFunc_sem_SIMD (void *param);

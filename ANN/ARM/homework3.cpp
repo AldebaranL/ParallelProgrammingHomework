@@ -11,6 +11,7 @@
 using namespace std;
 
 
+
 void creat_samples()
 {
     TRAIN_MAT = new float* [NUM_SAMPLE];                         //生成训练样本
@@ -19,13 +20,16 @@ void creat_samples()
         for (int i = k * numPerClass; i < (k + 1) * numPerClass; ++i)
         {
             TRAIN_MAT[i] = new float[NUM_EACH_LAYER[0]];
-            //srand ( (int) time (0) );
-            TRAIN_MAT[i][0] = ( (rand() % 2000) - 1000) / 10000.0 + k / trainClass;
-            for (int j = 1; j < NUM_EACH_LAYER[0]; ++j)
+           // srand ( (int) time (0) );
+            //TRAIN_MAT[i][0] = ( (rand() % 2000) - 1000) / 10000.0 + k / trainClass;
+            for (int j = 0; j < NUM_EACH_LAYER[0]; ++j)
             {
+
+				TRAIN_MAT[i][j] = rand() % 1000 / 10000.0 + 0.1 * (2 * k + 1);
+
                 //TRAIN_MAT[i][j] = ( (rand() % 2000) - 1000 ) / 1000.0;
                 //printf("%d",k);
-                ///*
+                /*
                 switch(k){
                 case 0:
                     TRAIN_MAT[i][j] = 0.0;
@@ -53,29 +57,29 @@ void creat_samples()
             LABEL_MAT[i] = new float[NUM_EACH_LAYER[NUM_LAYERS+1]];
             for (int j = 0; j < NUM_EACH_LAYER[NUM_LAYERS+1]; ++j)
             {
-               // /*
+                /*
                 switch(k){
                 case 0:
                 LABEL_MAT[i][j] = 1.0;
                 break;
                 case 1:
-                LABEL_MAT[i][j] = 0.0;
+                LABEL_MAT[i][j] = 1.0;
                 break;
                 case 2:
                 LABEL_MAT[i][j] = 0.0;
                 break;
                 case 3:
-                LABEL_MAT[i][j] = 0.0;
+                LABEL_MAT[i][j] = 1.0;
                 break;
                 default:
                 printf("?");
                 }
                 //*/
                // LABEL_MAT[i][j] = k / trainClass*10+( (rand() % 2000) - 1000) / 10000.0;
-                //if (j%trainClass == k)
-                //    LABEL_MAT[i][j] = 1;
-                //else
-                //    LABEL_MAT[i][j] = -1;
+                if (j%trainClass == k)
+                    LABEL_MAT[i][j] = 1;
+                else
+                    LABEL_MAT[i][j] = 0;
                 //LABEL_MAT[i][j] = ( (rand() % 2000) - 1000 ) / 1000.0;
             }
 
@@ -110,7 +114,7 @@ int main()
 {
     creat_samples();
 
-    ANN_2 ann2 ( (int*) NUM_EACH_LAYER, 1,1,NUM_LAYERS);
+    ANN_2 ann2 ( (int*) NUM_EACH_LAYER, 128,1,NUM_LAYERS);
     ann2.shuffle (NUM_SAMPLE, TRAIN_MAT, LABEL_MAT);
 
 //        for (int i = 0; i <min(5, NUM_SAMPLE); i++)
@@ -137,7 +141,7 @@ int main()
 	}
 	printf ("SIMD:%ld.%09lds\n",dsec,dnsec);
 
-    ANN_2 ann3 ( (int*) NUM_EACH_LAYER, 1,1,NUM_LAYERS);
+    ANN_2 ann3 ( (int*) NUM_EACH_LAYER, 128,1,NUM_LAYERS);
     timespec_get(&sts, TIME_UTC);
     ann3.train (NUM_SAMPLE, TRAIN_MAT, LABEL_MAT);
     timespec_get(&ets, TIME_UTC);
@@ -149,9 +153,9 @@ int main()
 	}
 	printf ("ori:%ld.%09lds\n",dsec,dnsec);
 
-    ANN_pthread ann ( (int*) NUM_EACH_LAYER,  1,1,NUM_LAYERS);
+    ANN_pthread ann ( (int*) NUM_EACH_LAYER,  128,1,NUM_LAYERS);
     timespec_get(&sts, TIME_UTC);
-    ann.train (NUM_SAMPLE, TRAIN_MAT, LABEL_MAT);
+    ann.train_sem (NUM_SAMPLE, TRAIN_MAT, LABEL_MAT);
         timespec_get(&ets, TIME_UTC);
     dsec=ets.tv_sec-sts.tv_sec;
 	dnsec=ets.tv_nsec-sts.tv_nsec;
@@ -159,8 +163,20 @@ int main()
 		dsec--;
 		dnsec+=1000000000ll;
 	}
-	printf ("pthread:%ld.%09lds\n",dsec,dnsec);
+	printf ("pthreadsem:%ld.%09lds\n",dsec,dnsec);
 
+
+    ANN_pthread ann4 ( (int*) NUM_EACH_LAYER,  128,1,NUM_LAYERS);
+    timespec_get(&sts, TIME_UTC);
+    ann4.train_semSIMD (NUM_SAMPLE, TRAIN_MAT, LABEL_MAT);
+        timespec_get(&ets, TIME_UTC);
+    dsec=ets.tv_sec-sts.tv_sec;
+	dnsec=ets.tv_nsec-sts.tv_nsec;
+	if (dnsec<0){
+		dsec--;
+		dnsec+=1000000000ll;
+	}
+	printf ("pthreadsemSIMD:%ld.%09lds\n",dsec,dnsec);
 
     float *test_case = new float[10];
  /*
