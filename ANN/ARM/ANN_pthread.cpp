@@ -105,10 +105,10 @@ void* ANN_pthread::threadFunc_sem_SIMD (void *param)
                 {
                     class_p->layers[0]->output_nodes[i] = 0.0;
                     //printf("%d,%d ",i,class_p->num_each_layer[1]);
-                    int max_j = class_p->num_each_layer[0];
+                    int max_n = class_p->num_each_layer[0];
 
                     float32x4_t ans = vmovq_n_f32(0);
-                    for (int j = t_id * max_j / NUM_THREADS; j < min (max_j, (t_id + 1) *max_j / NUM_THREADS); j += 4)
+                    for (int j = t_id * max_n / NUM_THREADS; j < min (max_n, (t_id + 1) *max_n / NUM_THREADS); j += 4)
                         // for (int j = t_id; j < class_p->num_each_layer[0]; j += NUM_THREADS)
                     {
                         float32x4_t t1, t2;
@@ -142,9 +142,9 @@ void* ANN_pthread::threadFunc_sem_SIMD (void *param)
                     for (int i = 0; i < class_p->num_each_layer[layers_i + 1]; i++)
                     {
                         class_p->layers[layers_i]->output_nodes[i] = 0.0;
-                        int max_j = class_p->num_each_layer[layers_i];
+                        int max_n = class_p->num_each_layer[layers_i];
                         float32x4_t ans = vmovq_n_f32(0);
-                        for (int j = t_id * max_j / NUM_THREADS; j < min (max_j, (t_id + 1) *max_j / NUM_THREADS); j += 4)
+                        for (int j = t_id * max_n / NUM_THREADS; j < min (max_n, (t_id + 1) *max_n / NUM_THREADS); j += 4)
                             // for (int j = t_id; j < class_p->num_each_layer[0]; j += NUM_THREADS)
                         {
                             float32x4_t t1, t2;
@@ -186,10 +186,10 @@ void* ANN_pthread::threadFunc_sem_SIMD (void *param)
                 for (int k = 0; k < class_p->num_each_layer[i + 2]; k++)
                 {
                     //for (int j = t_id; j < class_p->num_each_layer[i + 1]; j += NUM_THREADS)
-                    int max_j = class_p->num_each_layer[i + 1];
+                    int max_n = class_p->num_each_layer[i + 1];
                     float32x4_t t3 = vmovq_n_f32 (class_p->layers[i + 1]->delta[k]);
                     //float32x4_t ans = _mm_setzero_ps();
-                    for (int j = t_id * max_j / NUM_THREADS; j < min (max_j, (t_id + 1) *max_j / NUM_THREADS); j += 4)
+                    for (int j = t_id * max_n / NUM_THREADS; j < min (max_n, (t_id + 1) *max_n / NUM_THREADS); j += 4)
                     {
                         float32x4_t t1, t2;
                         t1 = vld1q_f32 (error + j);
@@ -203,8 +203,8 @@ void* ANN_pthread::threadFunc_sem_SIMD (void *param)
                         //    error[j] += class_p->layers[i + 1]->weights[k][j] * class_p->layers[i + 1]->delta[k];
                     }
                 }
-                int max_j = class_p->num_each_layer[i + 1];
-                for (int j = t_id * max_j / NUM_THREADS; j < min (max_j, (t_id + 1) *max_j / NUM_THREADS); j += 1)
+                int max_n = class_p->num_each_layer[i + 1];
+                int my_n = (max_n % NUM_THREADS == 0) ? max_n / NUM_THREADS : max_n / NUM_THREADS + 1;for (int j = t_id * my_n; j < std::min (max_n, (t_id + 1) *my_n); j += 1)
                     //for (int j = t_id; j < class_p->num_each_layer[i + 1]; j += NUM_THREADS)
                 {
                     class_p->layers[i]->delta[j] = error[j] * class_p->layers[i]->derivative_activation_function (class_p->layers[i]->output_nodes[j]);
@@ -215,10 +215,10 @@ void* ANN_pthread::threadFunc_sem_SIMD (void *param)
             //反向传播，weights和bias更新
             for (int k = 0; k < class_p->num_each_layer[1]; k++)
             {
-                int max_j = class_p->num_each_layer[0];
+                int max_n = class_p->num_each_layer[0];
                 float32x4_t sr = vmovq_n_f32 (class_p->study_rate);
                 float32x4_t t2 = vmovq_n_f32 (class_p->layers[0]->delta[k]);
-                for (int j = t_id * max_j / NUM_THREADS; j < min (max_j, (t_id + 1) *max_j / NUM_THREADS); j += 4)
+                for (int j = t_id * max_n / NUM_THREADS; j < min (max_n, (t_id + 1) *max_n / NUM_THREADS); j += 4)
 
                     //for (int j = t_id; j < class_p->num_each_layer[0]; j += NUM_THREADS)
                 {
@@ -240,10 +240,10 @@ void* ANN_pthread::threadFunc_sem_SIMD (void *param)
             {
                 for (int k = 0; k < class_p->num_each_layer[i + 1]; k++)
                 {
-                    int max_j = class_p->num_each_layer[i];
+                    int max_n = class_p->num_each_layer[i];
                     float32x4_t sr = vmovq_n_f32 (class_p->study_rate);
                     float32x4_t t2 = vmovq_n_f32 (class_p->layers[i]->delta[k]);//printf("1");
-                    for (int j = t_id * max_j / NUM_THREADS; j < min (max_j, (t_id + 1) *max_j / NUM_THREADS); j += 4)
+                    for (int j = t_id * max_n / NUM_THREADS; j < min (max_n, (t_id + 1) *max_n / NUM_THREADS); j += 4)
                         //for (int j = t_id; j < class_p->num_each_layer[i]; j += NUM_THREADS)
                     {
                         float32x4_t t1, t3, product;
@@ -301,16 +301,16 @@ void* ANN_pthread::threadFunc_sem (void *param)
                 sem_wait (& (sem_before_fw[t_id]) ); // 阻塞,等待主线程（操作自己专属的信号量）
                 //printf ("%d begin fw\n", t_id);
 
-                int max_i = class_p->num_each_layer[1];
+                int max_n = class_p->num_each_layer[1];
 
                 //按weights矩阵的行进行划分，每个线程执行连续的一部分行，避免class_p->layers[0]->output_nodes[i]访问的冲突，连续的行性能明显优于间隔行的访问处理
-                for (int i = t_id * max_i / NUM_THREADS; i < min (max_i, (t_id + 1) *max_i / NUM_THREADS); i += 1)
+                int my_n = (max_n % NUM_THREADS == 0) ? max_n / NUM_THREADS : max_n / NUM_THREADS + 1;for (int i = t_id * my_n; i < std::min (max_n, (t_id + 1) *my_n); i += 1)
                     //for (int i = 0; i < class_p->num_each_layer[1]; i++)
                 {
                     class_p->layers[0]->output_nodes[i] = 0.0;
                     //printf("%d,%d ",i,class_p->num_each_layer[1]);
-                    // int max_j = class_p->num_each_layer[0];
-                    //for (int j = t_id * max_j / NUM_THREADS; j < min (max_j, (t_id + 1) *max_j / NUM_THREADS); j += 1)
+                    // int max_n = class_p->num_each_layer[0];
+                    //int my_n = (max_n % NUM_THREADS == 0) ? max_n / NUM_THREADS : max_n / NUM_THREADS + 1;for (int j = t_id * my_n; j < std::min (max_n, (t_id + 1) *my_n); j += 1)
                     // for (int j = t_id; j < class_p->num_each_layer[0]; j += NUM_THREADS)
                     for (int j = 0; j < class_p->num_each_layer[0]; j += 1)
                     {
@@ -325,15 +325,15 @@ void* ANN_pthread::threadFunc_sem (void *param)
                 for (int layers_i = 1; layers_i <= class_p->num_layers; layers_i++)
                 {
 
-                    int max_i = class_p->num_each_layer[layers_i + 1];
+                    int max_n = class_p->num_each_layer[layers_i + 1];
 
                     //按weights矩阵的行进行划分
-                    for (int i = t_id * max_i / NUM_THREADS; i < min (max_i, (t_id + 1) *max_i / NUM_THREADS); i += 1)
+                    int my_n = (max_n % NUM_THREADS == 0) ? max_n / NUM_THREADS : max_n / NUM_THREADS + 1;for (int i = t_id * my_n; i < std::min (max_n, (t_id + 1) *my_n); i += 1)
                         //for (int i = 0; i < class_p->num_each_layer[layers_i + 1]; i++)
                     {
                         class_p->layers[layers_i]->output_nodes[i] = 0.0;
-                        //int max_j = class_p->num_each_layer[layers_i];
-                        //for (int j = t_id * max_j / NUM_THREADS; j < min (max_j, (t_id + 1) *max_j / NUM_THREADS); j += 1)
+                        //int max_n = class_p->num_each_layer[layers_i];
+                        //int my_n = (max_n % NUM_THREADS == 0) ? max_n / NUM_THREADS : max_n / NUM_THREADS + 1;for (int j = t_id * my_n; j < std::min (max_n, (t_id + 1) *my_n); j += 1)
                         //for (int j = t_id; j < class_p->num_each_layer[layers_i]; j += NUM_THREADS)
                         for (int j = 0; j < class_p->num_each_layer[layers_i]; j += 1)
                         {
@@ -360,16 +360,16 @@ void* ANN_pthread::threadFunc_sem (void *param)
                 for (int k = 0; k < class_p->num_each_layer[i + 2]; k++)
                 {
                     //for (int j = t_id; j < class_p->num_each_layer[i + 1]; j += NUM_THREADS)
-                    int max_j = class_p->num_each_layer[i + 1];
+                    int max_n = class_p->num_each_layer[i + 1];
 
                     //按weights矩阵的列进行划分，也可按照k（按weights矩阵的行）进行划分
-                    for (int j = t_id * max_j / NUM_THREADS; j < min (max_j, (t_id + 1) *max_j / NUM_THREADS); j += 1)
+                    int my_n = (max_n % NUM_THREADS == 0) ? max_n / NUM_THREADS : max_n / NUM_THREADS + 1;for (int j = t_id * my_n; j < std::min (max_n, (t_id + 1) *my_n); j += 1)
                     {
                         error[j] += class_p->layers[i + 1]->weights[k][j] * class_p->layers[i + 1]->delta[k];
                     }
                 }
-                int max_j = class_p->num_each_layer[i + 1];
-                for (int j = t_id * max_j / NUM_THREADS; j < min (max_j, (t_id + 1) *max_j / NUM_THREADS); j += 1)
+                int max_n = class_p->num_each_layer[i + 1];
+                int my_n = (max_n % NUM_THREADS == 0) ? max_n / NUM_THREADS : max_n / NUM_THREADS + 1;for (int j = t_id * my_n; j < std::min (max_n, (t_id + 1) *my_n); j += 1)
                     //for (int j = t_id; j < class_p->num_each_layer[i + 1]; j += NUM_THREADS)
                 {
                     class_p->layers[i]->delta[j] = error[j] * class_p->layers[i]->derivative_activation_function (class_p->layers[i]->output_nodes[j]);
@@ -379,12 +379,12 @@ void* ANN_pthread::threadFunc_sem (void *param)
 
             //反向传播，weights和bias更新
             //按weights矩阵的行进行划分
-            int max_k = class_p->num_each_layer[1];
-            for (int k = t_id * max_k / NUM_THREADS; k < min (max_k, (t_id + 1) *max_k / NUM_THREADS); k++)
+            int max_n = class_p->num_each_layer[1];
+            int my_n = (max_n % NUM_THREADS == 0) ? max_n / NUM_THREADS : max_n / NUM_THREADS + 1;for (int k = t_id * my_n; k < std::min (max_n, (t_id + 1) *my_n); k += 1)
                 //for (int k = 0; k < class_p->num_each_layer[1]; k++)
             {
-                //int max_j = class_p->num_each_layer[0];
-                //for (int j = t_id * max_j / NUM_THREADS; j < min (max_j, (t_id + 1) *max_j / NUM_THREADS); j += 1)
+                //int max_n = class_p->num_each_layer[0];
+                //int my_n = (max_n % NUM_THREADS == 0) ? max_n / NUM_THREADS : max_n / NUM_THREADS + 1;for (int j = t_id * my_n; j < std::min (max_n, (t_id + 1) *my_n); j += 1)
                 for (int j = 0; j < class_p->num_each_layer[0]; j += 1)
                     //for (int j = t_id; j < class_p->num_each_layer[0]; j += NUM_THREADS)
                 {
@@ -394,11 +394,11 @@ void* ANN_pthread::threadFunc_sem (void *param)
             }
             for (int i = 1; i <= class_p->num_layers; i++)
             {
-                int max_k = class_p->num_each_layer[i + 1];
-                for (int k = t_id * max_k / NUM_THREADS; k < min (max_k, (t_id + 1) *max_k / NUM_THREADS); k++)
+                int max_n = class_p->num_each_layer[i + 1];
+                int my_n = (max_n % NUM_THREADS == 0) ? max_n / NUM_THREADS : max_n / NUM_THREADS + 1;for (int k = t_id * my_n; k < std::min (max_n, (t_id + 1) *my_n); k += 1)
                 {
-                    //int max_j = class_p->num_each_layer[i];
-                    //for (int j = t_id * max_j / NUM_THREADS; j < min (max_j, (t_id + 1) *max_j / NUM_THREADS); j += 1)
+                    //int max_n = class_p->num_each_layer[i];
+                    //int my_n = (max_n % NUM_THREADS == 0) ? max_n / NUM_THREADS : max_n / NUM_THREADS + 1;for (int j = t_id * my_n; j < std::min (max_n, (t_id + 1) *my_n); j += 1)
                     //for (int j = t_id; j < class_p->num_each_layer[i]; j += NUM_THREADS)
                     for (int j = 0; j < class_p->num_each_layer[i]; j += 1)
                     {
@@ -454,7 +454,8 @@ void ANN_pthread::train_sem (const int _num_sample, float** _trainMat, float** _
 
     for (int epoch = 0; epoch < num_epoch; epoch++)
     {
-       // if (epoch % 50 == 0) printf ("round%d:\n", epoch);
+        if (epoch % 50 == 0)
+            printf ("round%d:\n", epoch);
         int sample_index = 0;
         while (sample_index < _num_sample)
         {
@@ -579,7 +580,8 @@ void ANN_pthread::train_semSIMD (const int _num_sample, float** _trainMat, float
 
     for (int epoch = 0; epoch < num_epoch; epoch++)
     {
-       // if (epoch % 50 == 0)     printf ("round%d:\n", epoch);
+        if (epoch % 50 == 0)
+            printf ("round%d:\n", epoch);
         int sample_index = 0;
         while (sample_index < _num_sample)
         {
@@ -681,7 +683,8 @@ void* ANN_pthread::threadFunc_barrier (void *param)
 
     for (int epoch = 0; epoch < class_p->num_epoch; epoch++)
     {
-       // if (epoch % 50 == 0)     printf ("round%d:\n", epoch);
+        if (epoch % 50 == 0)
+            printf ("round%d:\n", epoch);
         int sample_index = 0;
         while (sample_index < NUM_SAMPLE)
         {
@@ -696,14 +699,14 @@ void* ANN_pthread::threadFunc_barrier (void *param)
                 if (sample_index >= NUM_SAMPLE) break;
                 //前向传播
                 //printf ("%d begin fw\n", t_id);
-                int max_i = class_p->num_each_layer[1];
-                for (int i = t_id * max_i / NUM_THREADS; i < min (max_i, (t_id + 1) *max_i / NUM_THREADS); i += 1)
+                int max_n = class_p->num_each_layer[1];
+                int my_n = (max_n % NUM_THREADS == 0) ? max_n / NUM_THREADS : max_n / NUM_THREADS + 1;for (int i = t_id * my_n; i < std::min (max_n, (t_id + 1) *my_n); i += 1)
                 {
 
                     class_p->layers[0]->output_nodes[i] = 0.0;
 
                     //printf("%d,%d ",i,class_p->num_each_layer[1]);
-                    int max_j = class_p->num_each_layer[0];
+                    int max_n = class_p->num_each_layer[0];
                     for (int j = 0; j < class_p->num_each_layer[0]; j += 1)
                         // for (int j = t_id; j < class_p->num_each_layer[0]; j += NUM_THREADS)
                     {
@@ -720,8 +723,8 @@ void* ANN_pthread::threadFunc_barrier (void *param)
                 for (int layers_i = 1; layers_i <= class_p->num_layers; layers_i++)
                 {
 
-                    int max_i = class_p->num_each_layer[layers_i + 1];
-                    for (int i = t_id * max_i / NUM_THREADS; i < min (max_i, (t_id + 1) *max_i / NUM_THREADS); i += 1)
+                    int max_n = class_p->num_each_layer[layers_i + 1];
+                    int my_n = (max_n % NUM_THREADS == 0) ? max_n / NUM_THREADS : max_n / NUM_THREADS + 1;for (int i = t_id * my_n; i < std::min (max_n, (t_id + 1) *my_n); i += 1)
                         //for (int i = 0; i < class_p->num_each_layer[layers_i + 1]; i++)
                     {
                         class_p->layers[layers_i]->output_nodes[i] = 0.0;
@@ -783,14 +786,14 @@ void* ANN_pthread::threadFunc_barrier (void *param)
                 for (int k = 0; k < class_p->num_each_layer[i + 2]; k++)
                 {
                     //for (int j = t_id; j < class_p->num_each_layer[i + 1]; j += NUM_THREADS)
-                    int max_j = class_p->num_each_layer[i + 1];
-                    for (int j = t_id * max_j / NUM_THREADS; j < min (max_j, (t_id + 1) *max_j / NUM_THREADS); j += 1)
+                    int max_n = class_p->num_each_layer[i + 1];
+                    int my_n = (max_n % NUM_THREADS == 0) ? max_n / NUM_THREADS : max_n / NUM_THREADS + 1;for (int j = t_id * my_n; j < std::min (max_n, (t_id + 1) *my_n); j += 1)
                     {
                         error[j] += class_p->layers[i + 1]->weights[k][j] * class_p->layers[i + 1]->delta[k];
                     }
                 }
-                int max_j = class_p->num_each_layer[i + 1];
-                for (int j = t_id * max_j / NUM_THREADS; j < min (max_j, (t_id + 1) *max_j / NUM_THREADS); j += 1)
+                int max_n = class_p->num_each_layer[i + 1];
+                int my_n = (max_n % NUM_THREADS == 0) ? max_n / NUM_THREADS : max_n / NUM_THREADS + 1;for (int j = t_id * my_n; j < std::min (max_n, (t_id + 1) *my_n); j += 1)
                     //for (int j = t_id; j < class_p->num_each_layer[i + 1]; j += NUM_THREADS)
                 {
                     class_p->layers[i]->delta[j] = error[j] * class_p->layers[i]->derivative_activation_function (class_p->layers[i]->output_nodes[j]);
@@ -802,11 +805,11 @@ void* ANN_pthread::threadFunc_barrier (void *param)
 
             //反向传播，weights和bias更新
 
-            int max_k = class_p->num_each_layer[1];
-            for (int k = t_id * max_k / NUM_THREADS; k < min (max_k, (t_id + 1) *max_k / NUM_THREADS); k++)
+            int max_n = class_p->num_each_layer[1];
+            int my_n = (max_n % NUM_THREADS == 0) ? max_n / NUM_THREADS : max_n / NUM_THREADS + 1;for (int k = t_id * my_n; k < std::min (max_n, (t_id + 1) *my_n); k += 1)
                 // for (int k = 0; k < class_p->num_each_layer[1]; k++)
             {
-                //int max_j = class_p->num_each_layer[0];
+                //int max_n = class_p->num_each_layer[0];
                 for (int j = 0; j < class_p->num_each_layer[0]; j += 1)
 
                     //for (int j = t_id; j < class_p->num_each_layer[0]; j += NUM_THREADS)
@@ -818,8 +821,8 @@ void* ANN_pthread::threadFunc_barrier (void *param)
             pthread_barrier_wait (&barrier_bp[0]);
             for (int i = 1; i <= class_p->num_layers; i++)
             {
-                int max_k = class_p->num_each_layer[i + 1];
-                for (int k = t_id * max_k / NUM_THREADS; k < min (max_k, (t_id + 1) *max_k / NUM_THREADS); k++)
+                int max_n = class_p->num_each_layer[i + 1];
+                int my_n = (max_n % NUM_THREADS == 0) ? max_n / NUM_THREADS : max_n / NUM_THREADS + 1;for (int k = t_id * my_n; k < std::min (max_n, (t_id + 1) *my_n); k += 1)
                 {
                     for (int j = 0; j < class_p->num_each_layer[i]; j += 1)
                         //for (int j = t_id; j < class_p->num_each_layer[i]; j += NUM_THREADS)

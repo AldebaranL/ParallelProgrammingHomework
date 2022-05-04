@@ -1,9 +1,13 @@
-///*#include <stdio.h>
-//#include <stdlib.h>
-//#include <immintrin.h>
-//
-//int main(void)
-//{
+#include <stdio.h>
+#include <stdlib.h>
+#include <immintrin.h>
+#include<math.h>
+int main (void)
+{
+    int max_n = 10;
+
+    int my_n = (max_n % NUM_THREADS == 0) ? max_n / NUM_THREADS : max_n / NUM_THREADS + 1;
+    for (int i = t_id * my_n; i < std::min (max_n, (t_id + 1) *my_n); i += 1)
 //    int* p1 = (int*)malloc(10 * sizeof * p1);
 //    printf("default-aligned addr:   %p\n", (void*)p1);
 //    free(p1);
@@ -11,9 +15,10 @@
 //    int* p2 = (int*)_aligned_malloc(1024 * sizeof * p2,1024*1024);
 //    printf("1024-byte aligned addr: %p\n", (void*)p2);
 //    _aligned_free(p2);
-//    return 0;
-//}
-//*/
+
+        return 0;
+}
+
 //#include <stdio.h>
 //#include <stdlib.h>
 //#include <pthread.h>

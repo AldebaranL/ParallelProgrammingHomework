@@ -88,9 +88,13 @@
 	<math.h>
 	<immintrin.h>
 
-1651388493 source:d:\mycodes\codeblocks\ann\test.cpp
+1651625448 source:d:\mycodes\codeblocks\ann\test.cpp
+	<stdio.h>
+	<stdlib.h>
+	<immintrin.h>
+	<math.h>
 
-1651582458 source:d:\mycodes\codeblocks\ann\src\ann_pthread.cpp
+1651625481 source:d:\mycodes\codeblocks\ann\src\ann_pthread.cpp
 	"ANN_pthread.h"
 
 1651577666 d:\mycodes\codeblocks\ann\include\ann_pthread.h
@@ -116,14 +120,7 @@
 	<math.h>
 	<stdio.h>
 
-1651581864 source:d:\mycodes\codeblocks\ann\main.cpp
-	<iostream>
-	"ANN_2.h"
-	"ANN_pthread.h"
-	<windows.h>
-	<cstdlib>
-	<ctime>
-	"global.h"
+1651625383 source:d:\mycodes\codeblocks\ann\main.cpp
 
 1651479515 d:\mycodes\codeblocks\ann\include\ann_new.h
 	<Layer.h>

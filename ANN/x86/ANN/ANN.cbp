@@ -49,7 +49,6 @@
 		<Unit filename="include/ANN_2.h" />
 		<Unit filename="include/ANN_SIMD.h" />
 		<Unit filename="include/ANN_SIMD_aligned.h" />
-		<Unit filename="include/ANN_new.h" />
 		<Unit filename="include/ANN_pthread.h" />
 		<Unit filename="include/Layer.h" />
 		<Unit filename="include/global.h" />
@@ -59,7 +58,6 @@
 		<Unit filename="src/ANN_2.cpp" />
 		<Unit filename="src/ANN_SIMD.cpp" />
 		<Unit filename="src/ANN_SIMD_aligned.cpp" />
-		<Unit filename="src/ANN_new.cpp" />
 		<Unit filename="src/ANN_pthread.cpp" />
 		<Unit filename="src/Layer.cpp" />
 		<Unit filename="test.cpp" />
