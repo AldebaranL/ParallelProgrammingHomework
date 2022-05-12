@@ -396,9 +396,9 @@ void* ANN_pthread::threadFunc_sem (void *param)
 
         }
     }
-    printf ("fw:%lf in %d\n", fw, t_id);
-    printf ("delta:%lf in %d\n", delta, t_id);
-    printf ("bp:%lf in %d\n", bp, t_id);
+   // printf ("fw:%lf in %d\n", fw, t_id);
+    //printf ("delta:%lf in %d\n", delta, t_id);
+   // printf ("bp:%lf in %d\n", bp, t_id);
     //线程退出
     pthread_exit (NULL);
 
@@ -406,6 +406,7 @@ void* ANN_pthread::threadFunc_sem (void *param)
 
 void ANN_pthread::train_sem (const int _num_sample, float** _trainMat, float** _labelMat)
 {
+    printf ("begin training\n");
     double ini = 0.0;
     long long head, tail, freq;// timers
     double fw = 0, bp = 0;
@@ -540,9 +541,9 @@ void ANN_pthread::train_sem (const int _num_sample, float** _trainMat, float** _
     printf ("finish pthread_join\n");
     QueryPerformanceCounter ( (LARGE_INTEGER*) &tail);	// end time
     ini += (tail - head) * 1.0 / freq;
-    printf ("fw:%lf in main\n", fw);
-    printf ("ini:%lf in main\n", ini);
-    printf ("bp:%lf in main\n", bp);
+    //printf ("fw:%lf in main\n", fw);
+    //printf ("ini:%lf in main\n", ini);
+    //printf ("bp:%lf in main\n", bp);
     //delete线程输入参数
     // delet_params();
     // printf ("finish delet_params\n");

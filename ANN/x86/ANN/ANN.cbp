@@ -17,12 +17,13 @@
 					<Add option="-m64" />
 					<Add option="-g" />
 					<Add option="-march=native" />
-					<Add option="-pthread" />
+					<Add option="-fopenmp" />
 					<Add directory="include" />
 				</Compiler>
 				<Linker>
 					<Add option="-O1" />
 					<Add option="-m64" />
+					<Add option="-fopenmp" />
 				</Linker>
 			</Target>
 			<Target title="Release">
@@ -42,13 +43,16 @@
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
+			<Add option="-fopenmp" />
 		</Compiler>
 		<Unit filename="global.cpp" />
 		<Unit filename="include/ANN.h" />
 		<Unit filename="include/ANN_1.h" />
 		<Unit filename="include/ANN_2.h" />
+		<Unit filename="include/ANN_3.h" />
 		<Unit filename="include/ANN_SIMD.h" />
 		<Unit filename="include/ANN_SIMD_aligned.h" />
+		<Unit filename="include/ANN_openMP.h" />
 		<Unit filename="include/ANN_pthread.h" />
 		<Unit filename="include/Layer.h" />
 		<Unit filename="include/global.h" />
@@ -56,8 +60,10 @@
 		<Unit filename="src/ANN.cpp" />
 		<Unit filename="src/ANN_1.cpp" />
 		<Unit filename="src/ANN_2.cpp" />
+		<Unit filename="src/ANN_3.cpp" />
 		<Unit filename="src/ANN_SIMD.cpp" />
 		<Unit filename="src/ANN_SIMD_aligned.cpp" />
+		<Unit filename="src/ANN_openMP.cpp" />
 		<Unit filename="src/ANN_pthread.cpp" />
 		<Unit filename="src/Layer.cpp" />
 		<Unit filename="test.cpp" />

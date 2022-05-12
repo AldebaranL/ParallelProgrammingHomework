@@ -88,13 +88,9 @@
 	<math.h>
 	<immintrin.h>
 
-1651625448 source:d:\mycodes\codeblocks\ann\test.cpp
-	<stdio.h>
-	<stdlib.h>
-	<immintrin.h>
-	<math.h>
+1651976660 source:d:\mycodes\codeblocks\ann\test.cpp
 
-1651625481 source:d:\mycodes\codeblocks\ann\src\ann_pthread.cpp
+1651982301 source:d:\mycodes\codeblocks\ann\src\ann_pthread.cpp
 	"ANN_pthread.h"
 
 1651577666 d:\mycodes\codeblocks\ann\include\ann_pthread.h
@@ -115,12 +111,19 @@
 1651538282 source:d:\mycodes\codeblocks\ann\src\layer.cpp
 	"Layer.h"
 
-1651308349 d:\mycodes\codeblocks\ann\include\layer.h
+1651976839 d:\mycodes\codeblocks\ann\include\layer.h
 	<stdlib.h>
 	<math.h>
 	<stdio.h>
 
-1651625383 source:d:\mycodes\codeblocks\ann\main.cpp
+1652352878 source:d:\mycodes\codeblocks\ann\main.cpp
+	<iostream>
+	"ANN_openMP.h"
+	"ANN_3.h"
+	<windows.h>
+	<cstdlib>
+	<ctime>
+	"global.h"
 
 1651479515 d:\mycodes\codeblocks\ann\include\ann_new.h
 	<Layer.h>
@@ -185,6 +188,41 @@
 	<pthread.h>
 	"ANN_pthread.h"
 
-1651577783 source:d:\mycodes\codeblocks\ann\global.cpp
+1652348462 source:d:\mycodes\codeblocks\ann\global.cpp
 	"global.h"
+
+1652346741 d:\mycodes\codeblocks\ann\include\ann_openmp.h
+	"Layer.h"
+	"global.h"
+	<pthread.h>
+	<assert.h>
+	<stdlib.h>
+	<iostream>
+	<string.h>
+	<windows.h>
+	<ctime>
+	<math.h>
+	<vector>
+	<algorithm>
+	<omp.h>
+
+1651976967 d:\mycodes\codeblocks\ann\include\ann_3.h
+	"Layer.h"
+	"global.h"
+	<pthread.h>
+	<assert.h>
+	<stdlib.h>
+	<iostream>
+	<string.h>
+	<windows.h>
+	<ctime>
+	<math.h>
+	<vector>
+	<algorithm>
+
+1651976967 source:d:\mycodes\codeblocks\ann\src\ann_3.cpp
+	"ANN_3.h"
+
+1652347923 source:d:\mycodes\codeblocks\ann\src\ann_openmp.cpp
+	"ANN_openMP.h"
 

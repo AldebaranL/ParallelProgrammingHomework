@@ -6,3 +6,7 @@ qemu-aarch64 -L /usr/aarch64-linux-gnu ./test
 homework3:
 aarch64-linux-gnu-g++ -pthread -o test -march=armv8.2-a Layer.h Layer.cpp ANN_2.h ANN_pthread.h global.h global.cpp ANN_2.cpp ANN_pthread.cpp homework3.cpp
 qemu-aarch64 -L /usr/aarch64-linux-gnu ./test
+
+homework4:
+aarch64-linux-gnu-g++ -pthread -o test -march=armv8.2-a Layer.h Layer.cpp ANN_3.h ANN_openMP.h global.h global.cpp ANN_3.cpp ANN_openMP.cpp homework4.cpp
+qemu-aarch64 -L /usr/aarch64-linux-gnu ./test
