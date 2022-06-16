@@ -1,0 +1,51 @@
+# depslib dependency file v1.0
+1655263476 source:d:\mycodes\codeblocks\ann_mpi\src\layer.cpp
+	"Layer.h"
+
+1655261670 d:\mycodes\codeblocks\ann_mpi\include\layer.h
+	<stdlib.h>
+	<math.h>
+	<stdio.h>
+
+1655262013 source:d:\mycodes\codeblocks\ann_mpi\global.cpp
+	"global.h"
+
+1655262120 d:\mycodes\codeblocks\ann_mpi\global.h
+
+1655386948 source:d:\mycodes\codeblocks\ann_mpi\main.cpp
+	<iostream>
+	"ANN_MPI.h"
+	<windows.h>
+	<cstdlib>
+	<ctime>
+	"global.h"
+
+1655387199 d:\mycodes\codeblocks\ann_mpi\include\ann_mpi.h
+	"Layer.h"
+	"global.h"
+	<assert.h>
+	<stdlib.h>
+	<iostream>
+	<string.h>
+	<windows.h>
+	<ctime>
+	<math.h>
+	<vector>
+	<algorithm>
+	<omp.h>
+	<semaphore.h>
+	<mpi.h>
+
+1655371754 d:\mycodes\codeblocks\ann_mpi\include\global.h
+
+1572841416 c:\program files (x86)\microsoft sdks\mpi\include\mpi.h
+	<stdint.h>
+	<sal.h>
+	<stdint.h>
+
+1655378203 source:d:\mycodes\codeblocks\ann_mpi\src\global.cpp
+	"global.h"
+
+1655386488 source:d:\mycodes\codeblocks\ann_mpi\src\ann_mpi.cpp
+	"ANN_MPI.h"
+

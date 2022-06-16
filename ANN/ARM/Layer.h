@@ -28,6 +28,7 @@ protected:
     friend class ANN_2;
     friend class ANN_3;
     friend class ANN_openMP;
+    friend class ANN_MPI;
     enum {sigmoid,tanh} activation_type;//可指定激活函数
 };
 

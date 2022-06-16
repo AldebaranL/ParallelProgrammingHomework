@@ -6,10 +6,10 @@ int NUM_THREADS = 4;
 int NUM_EACH_LAYER[10] = { 1,1,1,1,1 };
 int NUM_LAYERS = 1;
 
-const int trainClass = 4; //ç±»åˆ«æ•°
-const int numPerClass = 16;  //æ¯ä¸ªç±»åˆ«çš„æ ·æœ¬ç‚¹æ•°
+const int trainClass = 4; //Àà±ğÊı
+const int numPerClass = 16;  //Ã¿¸öÀà±ğµÄÑù±¾µãÊı
 
-const int NUM_SAMPLE = trainClass * numPerClass;     //æ€»çš„æ ·æœ¬æ•°=æ¯ç±»è®­ç»ƒæ ·æœ¬æ•°*ç±»åˆ«æ•°
+const int NUM_SAMPLE = trainClass * numPerClass;     //×ÜµÄÑù±¾Êı=Ã¿ÀàÑµÁ·Ñù±¾Êı*Àà±ğÊı
 float** TRAIN_MAT;
 float** LABEL_MAT;
 
