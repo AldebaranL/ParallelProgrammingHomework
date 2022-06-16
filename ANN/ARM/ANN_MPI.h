@@ -54,6 +54,8 @@ private:
     void predict_MPI_alltoall();
     void predict_MPI_threads();
     void predict_MPI_threads_SIMD();
+    void predict_MPI_rma();
+    void predict_serial();
 };
 
 #endif // ANN_MPI_H

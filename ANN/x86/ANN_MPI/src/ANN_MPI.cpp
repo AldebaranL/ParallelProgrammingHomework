@@ -1095,24 +1095,24 @@ void ANN_MPI::predict_MPI_threads_SIMD()
     }
 }
 
-void ANN_MPI::train_MPI_predict (const int num_sample, float** _trainMat, float** _labelMat)
+void ANN_MPI::train_MPI_predict(const int num_sample, float** _trainMat, float** _labelMat)
 {
     //仅对正向传播循环进行了MPI优化
 
 
     int myid, numprocs;
-    MPI_Comm_rank (MPI_COMM_WORLD, &myid);
+    MPI_Comm_rank(MPI_COMM_WORLD, &myid);
 
-    printf ("%dbegin training\n", myid);
+    printf("%dbegin training\n", myid);
 
     float thre = 1e-2;
     float* avr_X = new float[num_each_layer[0]];
     float* avr_Y = new float[num_each_layer[num_layers + 1]];
 
 
-    long long time_mpi1 = 0, time_mpi2 = 0, time_mpi3 = 0, time_mpi4 = 0;
+    long long time_mpi1 = 0, time_mpi2 = 0, time_mpi3 = 0, time_mpi4 = 0,time_mpi5 = 0, time_mpi6 = 0, time_mpi7 = 0;
     long long head, tail, freq;// timers
-    QueryPerformanceFrequency ( (LARGE_INTEGER*) &freq);
+    QueryPerformanceFrequency((LARGE_INTEGER*)&freq);
 
     for (int epoch = 0; epoch < num_epoch; epoch++)
     {
@@ -1144,37 +1144,47 @@ void ANN_MPI::train_MPI_predict (const int num_sample, float** _trainMat, float*
                         layers[0]->output_nodes[i] += layers[0]->weights[i][j] * _trainMat[index][j];
                     }
                     layers[0]->output_nodes[i] += layers[0]->bias[i];
-                    layers[0]->output_nodes[i] = layers[0]->activation_function (layers[0]->output_nodes[i]);
+                    layers[0]->output_nodes[i] = layers[0]->activation_function(layers[0]->output_nodes[i]);
                 }//cout <<myid<< "here52" << endl;
-                MPI_Barrier (MPI_COMM_WORLD);
+                MPI_Barrier(MPI_COMM_WORLD);
                 //cout <<myid<< "here55" << endl;
-                QueryPerformanceCounter ( (LARGE_INTEGER*) &head); // start time
-                this->predict_MPI_rma();
-                QueryPerformanceCounter ( (LARGE_INTEGER*) &tail);
+                QueryPerformanceCounter((LARGE_INTEGER*)&head); // start time
+                predict_serial();
+                QueryPerformanceCounter((LARGE_INTEGER*)&tail);
                 time_mpi1 += tail - head;//cout <<myid<< "rma" << endl;
 
-                MPI_Barrier (MPI_COMM_WORLD);
-                QueryPerformanceCounter ( (LARGE_INTEGER*) &head); // start time
-                //this->predict_MPI_alltoall();
-                predict_serial();
-                QueryPerformanceCounter ( (LARGE_INTEGER*) &tail);
+                MPI_Barrier(MPI_COMM_WORLD);
+                QueryPerformanceCounter((LARGE_INTEGER*)&head); // start time
+                predict_MPI_static1();
+                QueryPerformanceCounter((LARGE_INTEGER*)&tail);
                 time_mpi2 += tail - head;//cout << myid<<"all" << endl;
 
-                MPI_Barrier (MPI_COMM_WORLD);
-                QueryPerformanceCounter ( (LARGE_INTEGER*) &head); // start time
-                //this->predict_MPI_dynamic();
+                MPI_Barrier(MPI_COMM_WORLD);
+                QueryPerformanceCounter((LARGE_INTEGER*)&head); // start time
                 predict_MPI_static2();
-                QueryPerformanceCounter ( (LARGE_INTEGER*) &tail);
+                QueryPerformanceCounter((LARGE_INTEGER*)&tail);
                 time_mpi3 += tail - head; //cout << myid<<"simd" << endl;
-                MPI_Barrier (MPI_COMM_WORLD);
-                QueryPerformanceCounter ( (LARGE_INTEGER*) &head); // start time
-                //this->predict_MPI_threads();
-                //predict_MPI_gather();
+                MPI_Barrier(MPI_COMM_WORLD);
+                QueryPerformanceCounter((LARGE_INTEGER*)&head); // start time
                 predict_MPI_dynamic();
-                QueryPerformanceCounter ( (LARGE_INTEGER*) &tail);
+                QueryPerformanceCounter((LARGE_INTEGER*)&tail);
                 time_mpi4 += tail - head;// cout << myid<<"gather" << endl;
-                MPI_Barrier (MPI_COMM_WORLD);
-
+                MPI_Barrier(MPI_COMM_WORLD);
+                QueryPerformanceCounter((LARGE_INTEGER*)&head); // start time
+                predict_MPI_threads();
+                QueryPerformanceCounter((LARGE_INTEGER*)&tail);
+                time_mpi5 += tail - head;// cout << myid<<"gather" << endl;
+                MPI_Barrier(MPI_COMM_WORLD);
+                QueryPerformanceCounter((LARGE_INTEGER*)&head); // start time
+                //predict_MPI_gather();
+                QueryPerformanceCounter((LARGE_INTEGER*)&tail);
+                time_mpi6 += tail - head;// cout << myid<<"gather" << endl;
+                MPI_Barrier(MPI_COMM_WORLD);
+                QueryPerformanceCounter((LARGE_INTEGER*)&head); // start time
+                //predict_MPI_alltoall();
+                QueryPerformanceCounter((LARGE_INTEGER*)&tail);
+                time_mpi7 += tail - head;// cout << myid<<"gather" << endl;
+                MPI_Barrier(MPI_COMM_WORLD);
                 if (myid != 0)
                     continue;
 
@@ -1182,7 +1192,7 @@ void ANN_MPI::train_MPI_predict (const int num_sample, float** _trainMat, float*
                 for (int j = 0; j < num_each_layer[num_layers + 1]; j++)
                 {
                     //均方误差损失函数,batch内取平均
-                    layers[num_layers]->delta[j] += (layers[num_layers]->output_nodes[j] - _labelMat[index][j]) * layers[num_layers]->derivative_activation_function (layers[num_layers]->output_nodes[j]);
+                    layers[num_layers]->delta[j] += (layers[num_layers]->output_nodes[j] - _labelMat[index][j]) * layers[num_layers]->derivative_activation_function(layers[num_layers]->output_nodes[j]);
                     //交叉熵损失函数
                     //layers[num_layers]->delta[j] += (layers[num_layers]->output_nodes[j] - _labelMat[index][j]);
                 }
@@ -1196,7 +1206,7 @@ void ANN_MPI::train_MPI_predict (const int num_sample, float** _trainMat, float*
             {
                 for (int j = 0; j < num_each_layer[num_layers + 1]; j++)
                 {
-                    if (batch_size == 0) printf ("wrong!\n");
+                    if (batch_size == 0) printf("wrong!\n");
                     layers[num_layers]->delta[j] /= batch_size;
                     //for(int i=0;i<5;i++)printf("delta=%f\n",layers[num_layers]->delta[i]);
                     avr_Y[j] /= batch_size;
@@ -1208,7 +1218,7 @@ void ANN_MPI::train_MPI_predict (const int num_sample, float** _trainMat, float*
             {
                 for (int j = 0; j < num_each_layer[num_layers + 1]; j++)
                 {
-                    if (index % batch_size == 0) printf ("wrong!\n");
+                    if (index % batch_size == 0) printf("wrong!\n");
                     layers[num_layers]->delta[j] /= (index % batch_size);
                     avr_Y[j] /= (index % batch_size);
                 }
@@ -1243,7 +1253,7 @@ void ANN_MPI::train_MPI_predict (const int num_sample, float** _trainMat, float*
                 }
                 for (int j = 0; j < num_each_layer[i + 1]; j++)
                 {
-                    layers[i]->delta[j] = error[j] * layers[num_layers]->derivative_activation_function (layers[i]->output_nodes[j]);
+                    layers[i]->delta[j] = error[j] * layers[num_layers]->derivative_activation_function(layers[i]->output_nodes[j]);
                 }
                 delete[]error;
             }
@@ -1275,17 +1285,22 @@ void ANN_MPI::train_MPI_predict (const int num_sample, float** _trainMat, float*
     }
 
     //MPI_Finalize();
-    //if(myid==0){
-    cout << myid << "mpi1:" << time_mpi1 * 1.0 / freq << "s" << endl;
-    cout << myid << "mpi2:" << time_mpi2 * 1.0 / freq << "s" << endl;
-    cout << myid << "mpi3:" << time_mpi3 * 1.0 / freq << "s" << endl;
-    cout << myid << "mpi4:" << time_mpi4 * 1.0 / freq << "s" << endl;
-    //}
-    printf ("%d finish training\n", myid);
+    if(myid==0){
+    cout << myid << "serail:" << time_mpi1 * 1.0 / freq << "s" << endl;
+    cout << myid << "mpi_static1:" << time_mpi2 * 1.0 / freq << "s" << endl;
+    cout << myid << "mpi_static2:" << time_mpi3 * 1.0 / freq << "s" << endl;
+    cout << myid << "mpi_dynamic:" << time_mpi4 * 1.0 / freq << "s" << endl;
+    cout << myid << "mpi_threads:" << time_mpi5 * 1.0 / freq << "s" << endl;
+    cout << myid << "mpi_gather:" << time_mpi6 * 1.0 / freq << "s" << endl;
+    cout << myid << "mpi_alltoall:" << time_mpi7 * 1.0 / freq << "s" << endl;
+    }
+   // printf("%d finish training\n", myid);
 
     delete[]avr_X;
     delete[]avr_Y;
 }
+
+
 
 
 bool ANN_MPI::isNotConver_ (const int _sampleNum, float** _trainMat, float** _labelMat, float _thresh)

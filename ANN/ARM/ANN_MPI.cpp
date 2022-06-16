@@ -75,7 +75,7 @@ void ANN_MPI::train (const int num_sample, float** _trainMat, float** _labelMat)
     struct timespec sts,ets;
 	long long dsec=0;
 	long long dnsec=0;
-
+	timespec_get(&sts, TIME_UTC);
     for (int epoch = 0; epoch < num_epoch; epoch++)
     {
         if (epoch % 50 == 0)
@@ -109,7 +109,7 @@ void ANN_MPI::train (const int num_sample, float** _trainMat, float** _labelMat)
                 }
 
                 //QueryPerformanceCounter ( (LARGE_INTEGER*) &head); // start time
-                timespec_get(&sts, TIME_UTC);
+                
                 for (int i_layer = 1; i_layer <= num_layers; i_layer++)
                 {
                     for (int i = 0; i < num_each_layer[i_layer + 1]; i++)
@@ -126,9 +126,7 @@ void ANN_MPI::train (const int num_sample, float** _trainMat, float** _labelMat)
 
                 }
                 //QueryPerformanceCounter ( (LARGE_INTEGER*) &tail); // end time
-                timespec_get(&ets, TIME_UTC);
-                dsec+=ets.tv_sec-sts.tv_sec;
-	            dnsec+=ets.tv_nsec-sts.tv_nsec;
+
 
 //                static int tt = 0;
 //                float loss = 0.0;
@@ -239,13 +237,15 @@ void ANN_MPI::train (const int num_sample, float** _trainMat, float** _labelMat)
 
         // display();
     }
-    printf ("finish training\n");
-
+    //printf ("finish training\n");
+    timespec_get(&ets, TIME_UTC);
+    dsec+=ets.tv_sec-sts.tv_sec;
+	 dnsec+=ets.tv_nsec-sts.tv_nsec;
 	if (dnsec<0){
 		dsec--;
 		dnsec+=1000000000ll;
 	}
-	printf ("ori:%lld.%09llds\n",dsec,dnsec);
+	printf ("ori_all:%lld.%09llds\n",dsec,dnsec);
     //cout << "ori:" << time_ori * 1.0  / freq << "s" << endl;
     delete[]avr_X;
     delete[]avr_Y;
@@ -254,7 +254,7 @@ void ANN_MPI::train (const int num_sample, float** _trainMat, float** _labelMat)
 void ANN_MPI::train_MPI_all_static(const int num_sample, float** _trainMat, float** _labelMat)
 {
 	//对此函数中全部关键循环均进行了MPI优化，采用静态分配方式
-	printf("begin training\n");   // cout<<' ';
+	//printf("begin training\n");   // cout<<' ';
 	float thre = 1e-2;
 	float* avr_X = new float[num_each_layer[0]];
 	float* avr_Y = new float[num_each_layer[num_layers + 1]];
@@ -535,9 +535,9 @@ void ANN_MPI::train_MPI_all_static(const int num_sample, float** _trainMat, floa
     timespec_get(&ets, TIME_UTC);
     dsec+=ets.tv_sec-sts.tv_sec;
 	dnsec+=ets.tv_nsec-sts.tv_nsec;
-	printf("finish training\n");
+	//printf("finish training\n");
 	//std::cout << myid << "mpi_all:" << time_mpi * 1.0 / freq << "s" << endl;
-    printf ("mpi_all:%lld.%09llds\n",dsec,dnsec);
+    if(myid==0)printf ("mpi_all:%lld.%09llds\n",dsec,dnsec);
 	delete[]avr_X;
 	delete[]avr_Y;
 }
@@ -809,6 +809,65 @@ void ANN_MPI::predict_MPI_dynamic() {
 		//cout<<myid<<"finish pridect"<< i_layer<<endl;
 	}
 }
+void ANN_MPI::predict_MPI_rma()
+{
+    //rma单边通信，将每层的output_nodes共享
+    int myid, numprocs;
+    MPI_Status status;
+    MPI_Comm_rank(MPI_COMM_WORLD, &myid);
+    MPI_Comm_size(MPI_COMM_WORLD, &numprocs);
+
+    //声明窗口句柄
+    MPI_Win win_previous_layer;
+    MPI_Win win_current_layer;
+    for (int i_layer = 1; i_layer <= num_layers; i_layer++)
+    {
+        int i_size = (num_each_layer[i_layer + 1] + numprocs - 1) / (numprocs);//0号进程参与计算
+
+        //将上一层和当前层的output_nodes共享
+        MPI_Win_create(layers[i_layer - 1]->output_nodes, num_each_layer[i_layer] * sizeof(float), sizeof(float), MPI_INFO_NULL, MPI_COMM_WORLD, &win_previous_layer);
+        MPI_Win_create(layers[i_layer]->output_nodes, num_each_layer[i_layer + 1] * sizeof(float), sizeof(float), MPI_INFO_NULL, MPI_COMM_WORLD, &win_current_layer);
+
+
+        //发送weights数据
+        for (int i = 0; i < num_each_layer[i_layer + 1]; i++)
+            MPI_Bcast(layers[i_layer]->weights[i], num_each_layer[i_layer], MPI_FLOAT, 0, MPI_COMM_WORLD);
+
+        //计算
+        for (int i = myid * i_size; i < min(num_each_layer[i_layer + 1], (myid + 1) * i_size); i++)
+        {
+            layers[i_layer]->output_nodes[i] = 0.0;
+            for (int j = 0; j < num_each_layer[i_layer]; j++)
+            {
+                layers[i_layer]->output_nodes[i] += layers[i_layer]->weights[i][j] * layers[i_layer - 1]->output_nodes[j];
+            }
+            layers[i_layer]->output_nodes[i] += layers[i_layer]->bias[i];
+            layers[i_layer]->output_nodes[i] = layers[i_layer]->activation_function(layers[i_layer]->output_nodes[i]);
+        }
+        //不再需要结果发送和接收,但为保证上一层的节点已经全部计算完成，需要进行同步。
+        MPI_Barrier(MPI_COMM_WORLD);
+    }
+    MPI_Win_free(&win_previous_layer);
+    MPI_Win_free(&win_current_layer);
+}
+void ANN_MPI::predict_serial()
+{
+    //predict串行版本
+    for (int i_layer = 1; i_layer <= num_layers; i_layer++)
+    {
+        for (int i = 0; i < num_each_layer[i_layer + 1]; i++)
+        {
+            layers[i_layer]->output_nodes[i] = 0.0;
+            for (int j = 0; j < num_each_layer[i_layer]; j++)
+            {
+                layers[i_layer]->output_nodes[i] += layers[i_layer]->weights[i][j] * layers[i_layer - 1]->output_nodes[j];
+            }
+            layers[i_layer]->output_nodes[i] += layers[i_layer]->bias[i];
+            layers[i_layer]->output_nodes[i] = layers[i_layer]->activation_function(layers[i_layer]->output_nodes[i]);
+
+        }
+    }
+}
 
 
 void ANN_MPI::predict_MPI_threads() {
@@ -873,8 +932,8 @@ void ANN_MPI::train_MPI_predict(const int num_sample, float** _trainMat, float**
 
 	//long long time_mpi1 = 0, time_mpi2 = 0, time_mpi3 = 0, time_mpi4=0;
     struct timespec sts,ets;
-	long long dsec1=0,dsec2=0,dsec3=0;
-	long long dnsec1=0,dnsec2=0,dnsec3=0;
+	long long dsec0=0,dsec1=0,dsec2=0,dsec3=0;
+	long long dnsec0=0,dnsec1=0,dnsec2=0,dnsec3=0;
 	//long long head, tail, freq;// timers
 	//QueryPerformanceFrequency((LARGE_INTEGER*)&freq);
 
@@ -910,6 +969,13 @@ void ANN_MPI::train_MPI_predict(const int num_sample, float** _trainMat, float**
 					layers[0]->output_nodes[i] += layers[0]->bias[i];
 					layers[0]->output_nodes[i] = layers[0]->activation_function(layers[0]->output_nodes[i]);
 				}
+				MPI_Barrier(MPI_COMM_WORLD);
+                timespec_get(&sts, TIME_UTC);
+	            predict_serial();
+                timespec_get(&ets, TIME_UTC);
+                dsec0+=ets.tv_sec-sts.tv_sec;
+	            dnsec0+=ets.tv_nsec-sts.tv_nsec;
+
 				MPI_Barrier(MPI_COMM_WORLD);
                 timespec_get(&sts, TIME_UTC);
 	            predict_MPI_static1();
@@ -1036,9 +1102,10 @@ void ANN_MPI::train_MPI_predict(const int num_sample, float** _trainMat, float**
         if (dnsec1<0){dsec1--;dnsec1+=1000000000ll;}
         if (dnsec2<0){dsec2--;dnsec2+=1000000000ll;}
         if (dnsec3<0){dsec3--;dnsec3+=1000000000ll;}
-        printf ("mpi_1:%lld.%09llds\n",dsec1,dnsec1);
-     	printf ("mpi_2:%lld.%09llds\n",dsec2,dnsec2);
-        printf ("mpi_3:%lld.%09llds\n",dsec3,dnsec3);
+		printf ("mpi_serial:%lld.%09llds\n",dsec0,dnsec0);
+        printf ("mpi_static1:%lld.%09llds\n",dsec1,dnsec1);
+     	printf ("mpi_static2:%lld.%09llds\n",dsec2,dnsec2);
+        printf ("mpi_dynamic:%lld.%09llds\n",dsec3,dnsec3);
 	}
 	//printf("finish training\n");
 

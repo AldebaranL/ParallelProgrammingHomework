@@ -113,19 +113,21 @@ int main (int argc, char* argv[])
     MPI_Init_thread (&argc, &argv, MPI_THREAD_FUNNELED, &provided);
     int myid, numprocs;
     MPI_Comm_rank (MPI_COMM_WORLD, &myid);
-    int thesize[10] = { 256, 512,768,1024,1280,2048 };
-    for (int d_i = 0; d_i < 5; d_i++)
+    int thesize[100] = { 32,64,96,128,160,192,256, 512,768,1024,1280,2048 };
+    for (int d_i = 0; d_i < 6; d_i++)
     {
         for (int l_i = 0; l_i < NUM_LAYERS + 2; l_i++) NUM_EACH_LAYER[l_i] = thesize[d_i];
         if (myid == 0) cout << "---------------------begin " << thesize[d_i] << "--------------------" << endl;
 
         creat_samples();
-for (int l_i = 0; l_i < NUM_LAYERS + 2; l_i++) cout<<NUM_EACH_LAYER[l_i]<<' ';
+        //for (int l_i = 0; l_i < NUM_LAYERS + 2; l_i++) cout<<NUM_EACH_LAYER[l_i]<<' ';
         ANN_MPI ann ( (int*) NUM_EACH_LAYER, 128, 1, NUM_LAYERS, 0.1);
        // cout<<"here"<<endl;
         ann.shuffle (NUM_SAMPLE, TRAIN_MAT, LABEL_MAT);
 //cout<<"here22"<<endl;
         if(myid==0)ann.train (NUM_SAMPLE, TRAIN_MAT, LABEL_MAT);
+        MPI_Barrier (MPI_COMM_WORLD);
+        ann.train_MPI_all_static (NUM_SAMPLE, TRAIN_MAT, LABEL_MAT);
         //ann.get_predictions (TRAIN_MAT[0]);
         MPI_Barrier (MPI_COMM_WORLD);//cout<<"here23"<<endl;
         ann.train_MPI_predict (NUM_SAMPLE, TRAIN_MAT, LABEL_MAT);

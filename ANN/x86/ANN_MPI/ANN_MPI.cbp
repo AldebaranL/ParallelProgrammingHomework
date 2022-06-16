@@ -13,6 +13,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
+					<Add directory="include" />
 				</Compiler>
 			</Target>
 			<Target title="Release">
@@ -22,6 +23,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-O2" />
+					<Add directory="include" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -30,9 +32,27 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
+			<Add option="-std=c17" />
+			<Add option="-m64" />
 			<Add option="-fexceptions" />
+			<Add option="-fopenmp" />
+			<Add directory="C:/Program Files (x86)/Microsoft SDKs/MPI/Include" />
+			<Add directory="C:/Program Files (x86)/Microsoft SDKs/MPI/Include/x64" />
+			<Add directory="C:/Program Files (x86)/Microsoft SDKs/MPI/Include/x86" />
 		</Compiler>
+		<Linker>
+			<Add option="-m64" />
+			<Add option="-fopenmp" />
+			<Add library="C:/Program Files (x86)/Microsoft SDKs/MPI/Lib/x64/msmpi.lib" />
+			<Add library="C:/Program Files (x86)/Microsoft SDKs/MPI/Lib/x86/msmpi.lib" />
+		</Linker>
+		<Unit filename="include/ANN_MPI.h" />
+		<Unit filename="include/Layer.h" />
+		<Unit filename="include/global.h" />
 		<Unit filename="main.cpp" />
+		<Unit filename="src/ANN_MPI.cpp" />
+		<Unit filename="src/Layer.cpp" />
+		<Unit filename="src/global.cpp" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>
