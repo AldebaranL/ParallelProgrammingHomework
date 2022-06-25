@@ -1,0 +1,192 @@
+---------------------begin 32--------------------
+finished creating samples
+finish shuffle
+begin training
+finished creating samples
+finished creating samples
+finished creating samples
+finish shuffle
+finished creating samples
+finished creating samples
+finish shuffle
+finished creating samples
+finish shuffle
+finished creating samples
+finish shuffle
+finish shuffle
+finish shuffle
+finish shuffle
+ori_all:0.482152954s
+mpi_all:11.172519385s
+mpi_serial:0.102477903s
+mpi_static1:1.686183984s
+mpi_static2:4.288743034s
+mpi_dynamic:4.255770083s
+begin delete samples finish delete
+---------------------begin 64--------------------
+finished creating samples
+finish shuffle
+begin training
+begin delete samples finish delete
+begin delete samples finish delete
+begin delete samples finish delete
+finished creating samples
+finish shuffle
+begin delete samples finish delete
+begin delete samples finish delete
+finished creating samples
+finished creating samples
+finished creating samples
+finished creating samples
+finish shuffle
+finish shuffle
+finish shuffle
+finish shuffle
+begin delete samples finish delete
+finished creating samples
+finish shuffle
+begin delete samples finish delete
+finished creating samples
+finish shuffle
+ori_all:1.753475213s
+mpi_all:15.471628328s
+mpi_serial:0.389123914s
+mpi_static1:3.-465228276s
+mpi_static2:2.4498072501s
+mpi_dynamic:9.-1239695331s
+begin delete samples finish delete
+---------------------begin 96--------------------
+finished creating samples
+finish shuffle
+begin training
+begin delete samples finish delete
+begin delete samples finish delete
+begin delete samples finish delete
+begin delete samples finish delete
+finished creating samples
+finish shuffle
+begin delete samples finish delete
+finished creating samples
+finished creating samples
+finished creating samples
+finished creating samples
+finish shuffle
+finish shuffle
+finish shuffle
+finish shuffle
+begin delete samples finish delete
+finished creating samples
+finish shuffle
+begin delete samples finish delete
+finished creating samples
+finish shuffle
+ori_all:4.004102333s
+mpi_all:21.-238468953s
+begin delete samples finish delete
+finished creating samples
+begin delete samples finish delete
+begin delete samples finish delete
+begin delete samples finish delete
+finish shuffle
+finished creating samples
+finished creating samples
+finished creating samples
+finish shuffle
+finish shuffle
+finish shuffle
+mpi_serial:1.-155239537s
+mpi_static1:3.037635497s
+mpi_static2:13.-3748588295s
+mpi_dynamic:9.3131982541s
+begin delete samples finish delete
+---------------------begin 128--------------------
+finished creating samples
+finish shuffle
+begin training
+begin delete samples finish delete
+finished creating samples
+finish shuffle
+begin delete samples finish delete
+finished creating samples
+finish shuffle
+begin delete samples finish delete
+finished creating samples
+finish shuffle
+ori_all:7.063169064s
+mpi_all:27.354125728s
+begin delete samples finish delete
+begin delete samples finish delete
+begin delete samples finish delete
+begin delete samples finish delete
+finished creating samples
+finished creating samples
+finished creating samples
+finished creating samples
+finish shuffle
+finish shuffle
+finish shuffle
+finish shuffle
+mpi_serial:2.-487021028s
+mpi_static1:3.192355190s
+mpi_static2:11.1605278074s
+mpi_dynamic:15.1081620325s
+begin delete samples finish delete
+---------------------begin 160--------------------
+finished creating samples
+finish shuffle
+begin training
+begin delete samples finish delete
+finished creating samples
+finish shuffle
+begin delete samples finish delete
+finished creating samples
+finish shuffle
+begin delete samples finish delete
+finished creating samples
+finish shuffle
+ori_all:11.829358597s
+mpi_all:33.314766822s
+begin delete samples finish deletebegin delete samples finish delete
+begin delete samples finish delete
+begin delete samples finish delete
+finished creating samples
+finish shuffle
+begin delete samples finish delete
+
+finished creating samples
+finished creating samples
+finished creating samples
+finished creating samples
+finish shuffle
+finish shuffle
+finish shuffle
+finish shuffle
+mpi_serial:4.-1632072022s
+mpi_static1:3.876480217s
+mpi_static2:15.934114462s
+mpi_dynamic:20.654747424s
+begin delete samples finish delete
+---------------------begin 192--------------------
+finished creating samples
+finish shuffle
+begin training
+begin delete samples finish delete
+finished creating samples
+finish shuffle
+begin delete samples finish delete
+finished creating samples
+finish shuffle
+ori_all:17.031759162s
+mpi_all:44.144150034s
+mpi_serial:3.343058626s
+mpi_static1:3.1526869123s
+mpi_static2:22.-3179891158s
+mpi_dynamic:22.2969744423s
+begin delete samples finish delete
+begin delete samples finish delete
+begin delete samples finish delete
+begin delete samples finish delete
+begin delete samples begin delete samples finish delete
+begin delete samples finish delete
+begin delete samples finish delete
+finish delete

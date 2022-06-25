@@ -1,0 +1,43 @@
+# depslib dependency file v1.0
+1656164499 source:d:\mycodes\codeblocks\ann_final\ann_4.cpp
+	"ANN_4.h"
+
+1656163311 d:\mycodes\codeblocks\ann_final\ann_4.h
+	"Layer.h"
+	"global.h"
+	<assert.h>
+	<stdlib.h>
+	<iostream>
+	<string.h>
+	<windows.h>
+	<ctime>
+	<math.h>
+	<vector>
+	<algorithm>
+
+1656163112 d:\mycodes\codeblocks\ann_final\layer.h
+	<stdlib.h>
+	<math.h>
+	<stdio.h>
+	"global.h"
+
+1656164580 d:\mycodes\codeblocks\ann_final\global.h
+
+1656164561 source:d:\mycodes\codeblocks\ann_final\global.cpp
+	"global.h"
+
+1656160809 source:d:\mycodes\codeblocks\ann_final\layer.cpp
+	"Layer.h"
+
+1656164604 source:d:\mycodes\codeblocks\ann_final\main.cpp
+	<iostream>
+	"ANN_4.h"
+	<windows.h>
+	<cstdlib>
+	<ctime>
+	<fstream>
+	<iomanip>
+	<sstream>
+	<string>
+	"global.h"
+
