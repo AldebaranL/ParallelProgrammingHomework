@@ -1,0 +1,9 @@
+﻿  global.cpp
+  main.cpp
+D:\Mycodes\VSProject\ANN_final\ANN_final\main.cpp(80,44): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+D:\Mycodes\VSProject\ANN_final\ANN_final\main.cpp(107,44): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+D:\Mycodes\VSProject\ANN_final\ANN_final\main.cpp(139,74): warning C4305: “参数”: 从“double”到“float”截断
+D:\Mycodes\VSProject\ANN_final\ANN_final\main.cpp(143,23): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+D:\Mycodes\VSProject\ANN_final\ANN_final\main.cpp(119,17): warning C4101: “numprocs”: 未引用的局部变量
+  正在生成代码...
+  ANN_final.vcxproj -> D:\Mycodes\VSProject\ANN_final\Debug\ANN_final.exe
